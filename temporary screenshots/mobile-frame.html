@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>mobile frame</title>
+<style>body{margin:0;background:#888;display:flex;gap:24px;padding:16px}iframe{border:0;background:#fff;flex:0 0 auto}</style>
+</head><body>
+<!-- usage: mobile-frame.html?hash=vault-home  (defaults to the home view) -->
+<iframe id="a" width="390" height="1160" title="390px viewport"></iframe>
+<iframe id="b" width="768" height="1160" title="768px viewport"></iframe>
+<script>
+  var h = new URLSearchParams(location.search).get('hash');
+  var src = '/' + (h ? '#' + h : '');
+  document.getElementById('a').src = src;
+  document.getElementById('b').src = src;
+</script>
+</body></html>

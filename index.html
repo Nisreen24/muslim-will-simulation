@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Muslim Will Dashboard</title>
+<meta name="color-scheme" content="light">
+<link rel="icon" href="data:,">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Same faces as patriva.com: Playfair Display (display) + Inter (UI/body) -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  // ---- Brand tokens — sourced from patriva.com design tokens + app logo ----
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          navy:   { DEFAULT: '#0B1F3B', 2: '#12263F', 3: '#081C38' },   // logo navy / ink-900 / ink-950
+          gold:   { DEFAULT: '#C8A868', text: '#B69352', deep: '#8A6D33', line: '#E5D6B4', tint: '#F7F1E4' },
+          ground: '#F5F3EE',
+          ink:    { DEFAULT: '#081C38', 900: '#12263F', 700: '#3A4A61', 500: '#61718A', 400: '#8694AB', 300: '#AEB9CB', 200: '#CFD7E2', 100: '#E6EBF1' },
+          line:   { DEFAULT: '#E8E4DB', cool: '#E6EBF1' },
+          ok:     '#2E7D5B',   // status-success token
+          danger: '#C0392B',   // status-danger token
+        },
+        fontFamily: {
+          serif: ['"Playfair Display"', 'Georgia', '"Times New Roman"', 'serif'],
+          sans:  ['Inter', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'Arial', 'sans-serif'],
+        },
+        boxShadow: {
+          // soft, low, navy-tinted (matches the product's elevation tokens)
+          bar:   '0 1px 0 #E8E4DB, 0 4px 14px -10px rgba(8,28,56,.16)',
+          card:  '0 1px 2px rgba(8,28,56,.04), 0 8px 24px -14px rgba(8,28,56,.12)',
+          hero:  '0 24px 60px -30px rgba(8,28,56,.55), 0 4px 12px -6px rgba(8,28,56,.25)',
+          float: '0 2px 4px rgba(8,28,56,.08), 0 8px 20px -8px rgba(200,168,104,.45)',
+          tile:  'inset 0 1px 0 rgba(255,255,255,.06), 0 6px 14px -8px rgba(8,28,56,.5)',
+        },
+        transitionTimingFunction: {
+          spring: 'cubic-bezier(.2, .8, .2, 1)',
+        },
+      },
+    },
+  };
+</script>
+
+<style type="text/tailwindcss">
+  @layer components {
+    /* ---- Sidebar ---- */
+    .nav-item {
+      @apply flex w-full items-center gap-2.5 rounded-md px-3 min-h-[37px]
+             text-sm font-semibold text-white text-left no-underline
+             transition-transform duration-150 ease-spring motion-reduce:transition-none
+             hover:bg-white/[.06] active:translate-y-px
+             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/70;
+    }
+    .nav-item.is-active { @apply bg-white/[.09]; }
+    .nav-sub-link {
+      @apply flex items-center gap-2.5 min-h-[33px] text-sm font-normal text-ink-200
+             underline underline-offset-[3px] decoration-1
+             transition-transform duration-150 ease-spring motion-reduce:transition-none
+             hover:text-white active:translate-y-px
+             focus-visible:outline-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-gold/70;
+    }
+    .ring-dot { @apply inline-block h-[13px] w-[13px] shrink-0 rounded-full border-[1.5px] border-ink-500; }
+    .chip {
+      @apply rounded-[3px] px-2 py-0.5 text-[9.5px] font-semibold uppercase tracking-[.12em]
+             leading-[1.3] text-ink-300 border border-white/30;
+    }
+
+    /* ---- Buttons (hover / focus-visible / active on every clickable) ---- */
+    .btn {
+      @apply inline-flex h-8 items-center justify-center gap-2 rounded-md px-3 sm:px-3.5
+             text-sm font-medium no-underline whitespace-nowrap
+             border border-ink text-ink bg-transparent
+             transition-transform duration-200 ease-spring motion-reduce:transition-none
+             hover:bg-ink hover:text-white hover:-translate-y-px
+             active:translate-y-0 active:scale-[.98]
+             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-white;
+    }
+    .btn-primary {
+      @apply bg-gold border-gold text-navy shadow-float
+             hover:bg-gold-text hover:border-gold-text hover:text-navy;
+    }
+    .icon-btn {
+      @apply relative grid place-items-center rounded-full text-ink
+             transition-transform duration-150 ease-spring motion-reduce:transition-none
+             hover:opacity-70 active:scale-95
+             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold;
+    }
+
+    /* ---- Cards ---- */
+    .card {
+      @apply relative flex flex-col items-start rounded-[10px] bg-white border border-line
+             shadow-card px-[27px] pt-[29px] pb-[27px];
+    }
+    .tile {
+      @apply grid h-[45px] w-[45px] place-items-center rounded-lg bg-navy text-gold shadow-tile;
+    }
+    .pill {
+      @apply font-sans rounded-full border border-gold px-[9px] py-0.5
+             text-[9.5px] font-semibold uppercase tracking-[.12em] leading-[1.2] text-gold-text;
+    }
+
+    /* ---- Vault view ---- */
+    .feature {
+      @apply flex items-center gap-[13px] rounded-[10px] border border-line bg-white px-[18px] py-[17px]
+             shadow-card no-underline text-ink
+             transition-transform duration-200 ease-spring motion-reduce:transition-none
+             hover:-translate-y-px active:translate-y-0
+             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold;
+    }
+    .feature-tile {
+      @apply grid h-[35px] w-[35px] shrink-0 place-items-center rounded-lg bg-navy text-gold shadow-tile;
+    }
+    .hero-bg {
+      background:
+        radial-gradient(450px 270px at 90% 0%, rgba(200,168,104,.16), transparent 70%),
+        radial-gradient(720px 400px at 0% 100%, rgba(18,38,63,.6), transparent 70%),
+        linear-gradient(120deg, #0D2242 0%, #0B1F3B 50%, #081C38 100%);
+    }
+
+    /* ---- Add Package flow ---- */
+    .btn-lg { @apply h-11 px-5 text-[15px] sm:h-10 sm:text-sm; }           /* 44px touch target on mobile */
+    .back-link {
+      @apply inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-500 no-underline
+             hover:text-ink focus-visible:outline-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-gold;
+    }
+    .pkg-chip {
+      @apply inline-flex items-center gap-1.5 rounded-full border border-gold-line bg-gold-tint px-2.5 py-1
+             text-xs font-medium text-ink;
+    }
+    .eyebrow { @apply text-[11px] font-medium uppercase tracking-[.16em] text-gold-text; }
+    .field {
+      @apply h-10 w-full rounded-md border border-ink-200 bg-white px-3 text-sm text-ink
+             placeholder:text-ink-400 focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30;
+    }
+    .choice {
+      @apply flex cursor-pointer items-start gap-3 rounded-lg border border-line px-3.5 py-3
+             has-[:checked]:border-gold has-[:checked]:bg-gold-tint/60;
+    }
+    .alert-danger {
+      @apply flex gap-2.5 rounded-lg border border-danger/30 bg-danger/[.06] px-3.5 py-3 text-[13px] leading-5 text-ink;
+    }
+
+    /* ---- Subscribed Vault dashboard ---- */
+    .wide { @apply max-w-none md:px-[39px]; }                       /* full-width container used by #vault-home */
+    .stat { @apply rounded-xl border border-line bg-white px-[18px] pt-[18px] pb-3 shadow-card; }
+    .stat-ico { @apply grid h-[29px] w-[29px] shrink-0 place-items-center rounded-md bg-gold-tint text-gold-text; }
+    .stat-label { @apply text-[10.5px] font-medium uppercase tracking-[.14em] text-ink-500; }
+    .stat-value { @apply mt-2.5 font-serif text-[26px] leading-8 text-ink; }
+    .stat-sub { @apply mt-1 text-[11.5px] text-ink-500; }
+    .manage {
+      @apply flex items-center gap-4 rounded-[10px] border border-line bg-white px-6 py-6 shadow-card no-underline text-ink
+             transition-transform duration-200 ease-spring motion-reduce:transition-none
+             hover:-translate-y-px active:translate-y-0
+             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold;
+    }
+    .nav-locked { @apply flex w-full items-center gap-2.5 rounded-md px-3 min-h-[37px] text-sm font-semibold text-ink-400 cursor-default; }
+  }
+</style>
+<style>
+  /* The [hidden] attribute must beat component display rules (.btn, .pkg-chip, .nav-item…). */
+  [hidden] { display: none !important; }
+</style>
+</head>
+
+<body class="m-0 bg-ground font-sans text-sm leading-normal text-ink antialiased">
+
+<div class="flex min-h-screen">
+
+  <!-- mobile backdrop for the drawer -->
+  <div id="backdrop" class="pointer-events-none fixed inset-0 z-20 bg-navy/60 opacity-0 transition-opacity duration-300 ease-spring motion-reduce:transition-none md:hidden" aria-hidden="true"></div>
+
+  <!-- ================= Sidebar (base layer) ================= -->
+  <aside id="sidebar" class="fixed left-0 top-0 z-30 h-screen w-64 shrink-0 -translate-x-full overflow-auto bg-navy pl-1.5 pr-4 pb-5 pt-3 text-white transition-transform duration-300 ease-spring motion-reduce:transition-none md:sticky md:translate-x-0" aria-label="Primary">
+    <div class="flex items-center gap-2.5 px-2.5 pb-4 pt-1.5">
+      <svg class="h-8 w-8 shrink-0" viewBox="0 0 46 40" aria-hidden="true">
+        <path d="M11 1h35L35 39H0z" fill="#C8A868"/>
+        <text x="24" y="30" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-style="italic" font-weight="700" font-size="30" fill="#0B1F3B">W</text>
+      </svg>
+      <div>
+        <div class="font-serif text-base font-semibold leading-[1.1] tracking-[.01em] text-white">Muslim Will</div>
+        <div class="mt-0.5 text-[10px] text-ink-300">a product of Patriva</div>
+      </div>
+    </div>
+
+    <nav class="flex flex-col gap-3.5" aria-label="Sections">
+      <a class="nav-item is-active" href="#home" data-nav-id="home">
+        <svg class="h-[18px] w-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h13V10"/><path d="M10 20v-5h4v5"/>
+        </svg>
+        <span class="flex-1" data-sub-text="My Estate Plan|Dashboard">My Estate Plan</span>
+      </a>
+
+      <!-- appears once the Islamic Will package is purchased (simulation state) -->
+      <a class="nav-item" href="#home" data-will="active" hidden>
+        <svg class="h-[18px] w-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M10 13h6M10 17h6"/>
+        </svg>
+        <span class="flex-1">My Islamic Will</span>
+        <span class="chip !border-gold/60 !text-gold">New</span>
+      </a>
+
+      <div class="flex flex-col" data-sub="pre">
+        <button class="nav-item nav-toggle group" type="button" aria-expanded="true" aria-controls="sub-bridge">
+          <svg class="h-[18px] w-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M10 13h6M10 17h6"/>
+          </svg>
+          <span class="flex-1">My Bridge</span>
+          <span class="chip">Preview</span>
+          <svg class="h-[13px] w-[13px] text-ink-300 transition-transform duration-200 ease-spring group-aria-[expanded=false]:-rotate-90" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
+        </button>
+        <ul class="flex list-none flex-col pl-[22px]" id="sub-bridge">
+          <li><a class="nav-sub-link" href="#home"><i class="ring-dot"></i>Choose a plan to begin</a></li>
+        </ul>
+      </div>
+
+      <!-- subscribed state: My Bridge is locked -->
+      <div class="nav-locked -mb-3" data-sub="post" hidden aria-disabled="true">
+        <svg class="h-[18px] w-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M10 13h6M10 17h6"/>
+        </svg>
+        <span class="flex-1">My Bridge</span>
+        <svg class="h-[13px] w-[13px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      </div>
+
+      <div class="-mt-1 flex flex-col">
+        <button class="nav-item nav-toggle group" type="button" aria-expanded="true" aria-controls="sub-vault" data-nav-id="vault">
+          <svg class="h-[18px] w-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="12" cy="12" r="3.2"/><path d="M12 8.8v-1.6M12 16.8v-1.6M8.8 12H7.2M16.8 12h-1.6"/>
+          </svg>
+          <span class="flex-1">My Vault</span>
+          <span class="chip" data-sub="pre">Preview</span>
+          <svg class="h-[13px] w-[13px] text-ink-300 transition-transform duration-200 ease-spring group-aria-[expanded=false]:-rotate-90" data-sub="pre" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
+        </button>
+        <ul class="flex list-none flex-col pl-[22px]" id="sub-vault">
+          <li><a class="nav-sub-link" href="#vault-home"><i class="ring-dot"></i>Obligations Register</a></li>
+          <li><a class="nav-sub-link" href="#vault-home"><i class="ring-dot"></i>Estate Inventory</a></li>
+          <li><a class="nav-sub-link" href="#vault-home"><i class="ring-dot"></i>Sealed Disclosures</a></li>
+          <li><a class="nav-sub-link" href="#vault-home"><i class="ring-dot"></i>Final Words</a></li>
+        </ul>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- ================= Main ================= -->
+  <div class="flex min-w-0 flex-1 flex-col">
+
+    <!-- Top bar (elevated layer) -->
+    <header class="sticky top-0 z-10 flex h-[54px] items-center justify-between gap-3 bg-white px-3 pb-2 shadow-bar md:pl-7 md:pr-9">
+      <div class="flex min-w-0 items-center gap-2 md:gap-2.5">
+        <button id="menu-btn" class="icon-btn h-7 w-7 md:hidden" type="button" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false">
+          <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+        <div id="crumb" class="truncate text-[13.5px] text-ink-500">My Estate Plan</div>
+      </div>
+      <div class="flex shrink-0 items-center gap-2 md:gap-[18px]">
+        <button class="icon-btn h-7 w-7" type="button" aria-label="Notifications, 1 unread">
+          <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/>
+          </svg>
+          <span class="absolute right-0 top-0 grid h-3.5 min-w-[14px] place-items-center rounded-full bg-gold px-1 text-[8px] font-bold leading-none text-navy">1</span>
+        </button>
+        <a class="btn" href="#">Get help</a>
+        <button class="group flex items-center gap-2.5 rounded-full pr-1 transition-transform duration-150 ease-spring active:scale-[.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold" type="button" aria-haspopup="menu">
+          <span class="grid h-8 w-8 place-items-center rounded-full bg-gold text-[11px] font-bold tracking-[.02em] text-navy">NM</span>
+          <span class="hidden text-sm font-medium lg:inline group-hover:opacity-70">Nisreen</span>
+          <svg class="hidden h-[13px] w-[13px] text-ink-500 lg:block" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <main id="main" class="mx-auto w-full max-w-[1092px] px-4 pb-10 pt-5 md:px-[26px] md:pb-12 md:pt-8"
+          data-class-normal="mx-auto w-full max-w-[1092px] px-4 pb-10 pt-5 md:px-[26px] md:pb-12 md:pt-8"
+          data-class-wide="mx-auto w-full max-w-none px-4 pb-10 pt-5 md:px-[39px] md:pb-12 md:pt-8">
+
+      <!-- ======================================================
+           VIEW: home  (#home) — post-login landing
+           ====================================================== -->
+      <section id="view-home" class="view" data-title="My Estate Plan" data-nav="home">
+
+        <!-- Hero -->
+        <section class="hero-bg relative flex min-h-0 flex-col justify-center overflow-hidden rounded-[11px] px-6 py-11 text-white shadow-hero lg:min-h-[318px] lg:px-10 lg:py-[70px]" aria-labelledby="hero-title">
+          <svg class="pointer-events-none absolute inset-0 h-full w-full opacity-[.07] mix-blend-overlay" aria-hidden="true">
+            <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/></filter>
+            <rect width="100%" height="100%" filter="url(#grain)"/>
+          </svg>
+
+          <!-- arch + geometric pattern -->
+          <svg class="pointer-events-none absolute right-0 top-0 hidden h-full w-[52%] max-w-[496px] lg:block" viewBox="0 0 620 400" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
+            <defs>
+              <pattern id="geo" width="64" height="64" patternUnits="userSpaceOnUse">
+                <rect x="16" y="16" width="32" height="32" fill="none" stroke="#C8A868" stroke-width=".8"/>
+                <rect x="16" y="16" width="32" height="32" fill="none" stroke="#C8A868" stroke-width=".8" transform="rotate(45 32 32)"/>
+                <path d="M32 0v16M32 48v16M0 32h16M48 32h16" fill="none" stroke="#C8A868" stroke-width=".8"/>
+              </pattern>
+              <radialGradient id="fade" cx="92%" cy="6%" r="70%">
+                <stop offset="0" stop-color="#fff" stop-opacity="1"/>
+                <stop offset=".55" stop-color="#fff" stop-opacity=".35"/>
+                <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+              </radialGradient>
+              <mask id="m"><rect width="620" height="400" fill="url(#fade)"/></mask>
+            </defs>
+            <rect width="620" height="400" fill="url(#geo)" mask="url(#m)" opacity=".2"/>
+            <path d="M260 400V232C260 222 258 214 264 204C282 176 330 148 366 112C404 74 432 40 452 -6"
+                  fill="none" stroke="#C8A868" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+
+          <div class="relative max-w-[528px]">
+            <div class="text-[11px] font-medium uppercase tracking-[.18em] text-gold">Undecided packages</div>
+            <h1 id="hero-title" class="mb-[18px] mt-3.5 font-serif text-2xl font-normal leading-[1.25] text-white lg:text-[30px] lg:leading-[38px]">Let's set up your estate plan. Where would you like to begin?</h1>
+            <p class="m-0 max-w-[512px] text-[13.5px] leading-[22px] text-ink-200">Most families start with their Islamic will. If you already have one, you can go straight to organizing your estate — and you can always do both.</p>
+          </div>
+        </section>
+
+        <!-- Choice cards -->
+        <section class="mt-[26px] grid grid-cols-1 gap-4 xl:grid-cols-2" aria-label="Where to begin">
+
+          <article class="card border-gold">
+            <span class="absolute -top-2 left-6 rounded-full bg-gold px-[11px] py-[3px] text-[9.5px] font-bold uppercase leading-[1.2] tracking-[.1em] text-navy">Most people start here</span>
+            <div class="tile">
+              <svg class="h-[21px] w-[21px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M10 13h6M10 17h6"/>
+              </svg>
+            </div>
+            <h2 class="mb-2 mt-[18px] font-serif text-xl font-medium leading-[27px] md:text-[22px]">Create your Islamic Will</h2>
+            <p class="m-0 max-w-[450px] text-[13.5px] leading-[21.5px] text-ink-700">Prepare a will aligned with Islamic inheritance principles and your provincial requirements — through a guided process with scholar and conformity review.</p>
+            <div class="mt-4 text-xs font-medium text-gold-text">New to estate planning<span class="mx-1">·</span>Need a Shariah-aligned will</div>
+            <a class="btn btn-primary mt-[18px]" href="#">Start my Islamic Will</a>
+          </article>
+
+          <article class="card">
+            <div class="tile">
+              <svg class="h-[21px] w-[21px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="12" cy="12" r="3.2"/><path d="M12 8.8v-1.6M12 16.8v-1.6M8.8 12H7.2M16.8 12h-1.6"/>
+              </svg>
+            </div>
+            <h2 class="mb-2 mt-[18px] flex flex-wrap items-center gap-[11px] font-serif text-xl font-medium leading-[27px] md:text-[22px]"><span>Organize your estate</span><span class="pill">My Vault</span></h2>
+            <p class="m-0 max-w-[450px] text-[13.5px] leading-[21.5px] text-ink-700">Already have a will? Keep your obligations, assets and final wishes in one secure place your family can reach when it matters.</p>
+            <div class="mt-4 text-xs font-medium text-gold-text">Already have a will<span class="mx-1">·</span>Want everything in one place</div>
+            <a class="btn mt-[18px]" href="#vault">Explore My Vault</a>
+          </article>
+
+        </section>
+      </section>
+
+      <!-- ======================================================
+           VIEW: vault  (#vault) — "Explore My Vault"
+           ====================================================== -->
+      <section id="view-vault" class="view" data-title="My Estate Plan" data-nav="home" hidden>
+
+        <!-- Hero -->
+        <section class="hero-bg relative flex min-h-0 flex-col justify-center overflow-hidden rounded-[11px] px-6 py-11 text-white shadow-hero lg:min-h-[320px] lg:px-10 lg:py-[66px]" aria-labelledby="vault-title">
+          <svg class="pointer-events-none absolute inset-0 h-full w-full opacity-[.07] mix-blend-overlay" aria-hidden="true">
+            <rect width="100%" height="100%" filter="url(#grain)"/>
+          </svg>
+
+          <!-- illustration: mihrab arch, vault door, floating record tiles -->
+          <svg class="pointer-events-none absolute right-0 top-0 hidden h-full lg:block" viewBox="0 0 380 400" preserveAspectRatio="xMaxYMid meet" aria-hidden="true">
+            <defs>
+              <radialGradient id="vglow" cx="50%" cy="64%" r="42%">
+                <stop offset="0" stop-color="#C8A868" stop-opacity=".22"/>
+                <stop offset="1" stop-color="#C8A868" stop-opacity="0"/>
+              </radialGradient>
+              <radialGradient id="vfade" cx="50%" cy="45%" r="55%">
+                <stop offset="0" stop-color="#fff" stop-opacity="1"/>
+                <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+              </radialGradient>
+              <mask id="vm"><rect width="380" height="400" fill="url(#vfade)"/></mask>
+            </defs>
+            <rect width="380" height="400" fill="url(#geo)" mask="url(#vm)" opacity=".14"/>
+            <rect width="380" height="400" fill="url(#vglow)"/>
+            <g fill="none" stroke="#C8A868" stroke-linecap="round" stroke-linejoin="round">
+              <!-- arch (double line) -->
+              <path d="M18 400V212C18 132 92 96 150 60Q176 42 190 22Q204 42 230 60C288 96 362 132 362 212V400" stroke-width="1.6"/>
+              <path d="M30 400V216C30 144 100 108 156 72Q180 56 190 40Q200 56 224 72C280 108 350 144 350 216V400" stroke-width="1" opacity=".5"/>
+              <!-- vault door -->
+              <circle cx="190" cy="258" r="112" fill="#0E2447" fill-opacity=".9" stroke-width="3"/>
+              <circle cx="190" cy="258" r="98" stroke-width="1" opacity=".7"/>
+              <circle cx="190" cy="258" r="42" stroke-width="2.5"/>
+              <circle cx="190" cy="258" r="12" stroke-width="2"/>
+              <g stroke-width="2.5">
+                <path d="M190 216v-40M190 300v40M148 258h-40M232 258h40"/>
+                <path d="M160 228l-28-28M220 228l28-28M160 288l-28 28M220 288l28 28"/>
+              </g>
+              <g fill="#C8A868" stroke="none" opacity=".9">
+                <circle cx="190" cy="152" r="2.5"/><circle cx="190" cy="364" r="2.5"/><circle cx="84" cy="258" r="2.5"/><circle cx="296" cy="258" r="2.5"/>
+                <circle cx="115" cy="183" r="2.5"/><circle cx="265" cy="183" r="2.5"/><circle cx="115" cy="333" r="2.5"/><circle cx="265" cy="333" r="2.5"/>
+              </g>
+              <rect x="300" y="222" width="16" height="72" rx="5" stroke-width="1.6" fill="#0E2447"/>
+              <!-- floating tiles -->
+              <g stroke-width="1.4" fill="#0E2447" fill-opacity=".92">
+                <rect x="136" y="76" width="54" height="54" rx="10"/>
+                <rect x="33" y="141" width="54" height="54" rx="10"/>
+                <rect x="240" y="141" width="54" height="54" rx="10"/>
+                <rect x="18" y="290" width="54" height="54" rx="10"/>
+                <rect x="256" y="290" width="54" height="54" rx="10"/>
+              </g>
+              <g stroke-width="1.6">
+                <path d="M155 92h10l6 6v16h-16zM165 92v6h6M159 106h8M159 111h8"/>
+                <path d="M50 160h20v16H50zM57 164l7 4-7 4z"/>
+                <path d="M262 160a5 5 0 0 1 10 0v6a5 5 0 0 1-10 0zM259 168a8 8 0 0 0 16 0M267 176v4M263 180h8"/>
+                <path d="M36 318l9-8 9 8M39 316v10h12v-10M43 326v-5h4v5"/>
+                <path d="M276 322a6 6 0 1 1 6-6l9-9M288 310l3 3M285 313l3 3"/>
+              </g>
+            </g>
+          </svg>
+
+          <div class="relative max-w-[528px]">
+            <div class="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[.18em] text-gold">
+              <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="12" cy="12" r="3.2"/><path d="M12 8.8v-1.6M12 16.8v-1.6M8.8 12H7.2M16.8 12h-1.6"/></svg>
+              <span>My Vault · by Patriva</span>
+            </div>
+            <h1 id="vault-title" class="mb-4 mt-3.5 font-serif text-2xl font-normal leading-[1.3] text-white lg:text-[30px] lg:leading-[40px]">Already have a will? Organize the rest of your Islamic estate.</h1>
+            <p class="m-0 max-w-[520px] text-[13.5px] leading-[22px] text-ink-200">A will names who inherits — but your obligations, asset inventory and final wishes often live nowhere your family can reach. My Vault brings them together in one secure place your executor can access when it matters.</p>
+          </div>
+        </section>
+
+        <!-- Vault sections -->
+        <section class="mt-[25px] grid grid-cols-1 gap-3 lg:grid-cols-2" aria-label="Vault sections">
+          <a class="feature" href="#vault">
+            <span class="feature-tile">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18M5 21h14M12 6l-6 7h12z"/><path d="M6 13a3 3 0 0 0 6 0M12 13a3 3 0 0 0 6 0"/></svg>
+            </span>
+            <span class="min-w-0">
+              <span class="block text-[13.5px] font-semibold leading-5 text-ink">Obligations Register</span>
+              <span class="mt-0.5 block text-xs leading-[18px] text-ink-500">Outstanding debts, unpaid zakat and mahr — recorded for your executor.</span>
+            </span>
+          </a>
+          <a class="feature" href="#vault">
+            <span class="feature-tile">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1" fill="currentColor"/><circle cx="4.5" cy="12" r="1" fill="currentColor"/><circle cx="4.5" cy="18" r="1" fill="currentColor"/></svg>
+            </span>
+            <span class="min-w-0">
+              <span class="block text-[13.5px] font-semibold leading-5 text-ink">Estate Inventory</span>
+              <span class="mt-0.5 block text-xs leading-[18px] text-ink-500">A living record of assets, accounts and property in one place.</span>
+            </span>
+          </a>
+          <a class="feature" href="#vault">
+            <span class="feature-tile">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.2" fill="currentColor"/></svg>
+            </span>
+            <span class="min-w-0">
+              <span class="block text-[13.5px] font-semibold leading-5 text-ink">Sealed Disclosures</span>
+              <span class="mt-0.5 block text-xs leading-[18px] text-ink-500">Private notes and credentials, released only when needed.</span>
+            </span>
+          </a>
+          <a class="feature" href="#vault">
+            <span class="feature-tile">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16"/><path d="M6 16.5 16.5 6a2 2 0 0 1 2.8 2.8L8.8 19.3 5 20z"/></svg>
+            </span>
+            <span class="min-w-0">
+              <span class="block text-[13.5px] font-semibold leading-5 text-ink">Final Words</span>
+              <span class="mt-0.5 block text-xs leading-[18px] text-ink-500">Personal wishes and guidance for those you leave behind.</span>
+            </span>
+          </a>
+        </section>
+
+        <!-- Pricing -->
+        <section class="mt-5 flex flex-col gap-4 rounded-[10px] border border-gold bg-white px-[25px] py-5 shadow-card sm:flex-row sm:items-center sm:justify-between" aria-label="Vault plan">
+          <div>
+            <div class="flex items-baseline gap-1.5">
+              <span class="font-serif text-2xl leading-7 text-ink">$5.99</span>
+              <span class="text-xs text-ink-500">CAD /mo</span>
+            </div>
+            <div class="mt-1 text-xs text-ink-500">Vault — ongoing secure storage and estate organization.</div>
+          </div>
+          <a class="btn btn-primary h-10 px-[22px]" href="#vault-home">
+            Start My Vault
+            <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          </a>
+        </section>
+
+        <!-- Cross-sell: the will -->
+        <a class="mt-4 flex items-center gap-[14px] rounded-[10px] border border-dashed border-ink-200 bg-white/60 px-[18px] py-[14px] text-ink no-underline transition-transform duration-200 ease-spring hover:-translate-y-px motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold" href="#home">
+          <span class="grid h-[35px] w-[35px] shrink-0 place-items-center rounded-full bg-ink-100 text-ink">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M10 13h6M10 17h6"/></svg>
+          </span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-sm font-semibold leading-5">Don't have an Islamic will yet — or unsure yours is compliant?</span>
+            <span class="mt-0.5 block text-xs leading-[18px] text-ink-500">Create one with The Muslim Will — aligned to Islamic inheritance and your province.</span>
+          </span>
+          <svg class="h-4 w-4 shrink-0 text-gold-text" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+        </a>
+
+        <hr class="mt-8 border-0 border-t border-line">
+        <p class="mt-6 text-center text-[11.5px] text-ink-500">The Muslim Will is a limited scope document generation service. It is not a law firm and does not provide legal advice.</p>
+      </section>
+
+      <!-- ======================================================
+           VIEW: vault-home  (#vault-home) — SUBSCRIBED Vault dashboard
+           Matches the live "My Vault" screen. The "Your plan / Add Package"
+           strip is the Requirement-1 addition (first on mobile, under the
+           hero on desktop).
+           ====================================================== -->
+      <section id="view-vault-home" class="view flex flex-col" data-title="My Vault" data-nav="vault" data-sidebar="post" data-wide hidden>
+
+        <!-- Hero (as in the live screen) -->
+        <section class="hero-bg relative order-2 mt-4 overflow-hidden rounded-[11px] px-6 pb-8 pt-8 text-white shadow-hero md:order-none md:mt-0 lg:min-h-[337px] lg:px-[43px] lg:pb-4 lg:pt-[39px]" aria-labelledby="vh-title">
+          <svg class="pointer-events-none absolute inset-0 h-full w-full opacity-[.07] mix-blend-overlay" aria-hidden="true">
+            <rect width="100%" height="100%" filter="url(#grain)"/>
+          </svg>
+
+          <!-- illustration: mihrab arch, vault door, floating record tiles -->
+          <svg class="pointer-events-none absolute right-0 top-0 hidden h-full lg:block" viewBox="0 0 380 400" preserveAspectRatio="xMaxYMid meet" aria-hidden="true">
+            <rect width="380" height="400" fill="url(#geo)" mask="url(#vm)" opacity=".14"/>
+            <rect width="380" height="400" fill="url(#vglow)"/>
+            <g fill="none" stroke="#C8A868" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 400V212C18 132 92 96 150 60Q176 42 190 22Q204 42 230 60C288 96 362 132 362 212V400" stroke-width="1.6"/>
+              <path d="M30 400V216C30 144 100 108 156 72Q180 56 190 40Q200 56 224 72C280 108 350 144 350 216V400" stroke-width="1" opacity=".5"/>
+              <circle cx="190" cy="258" r="112" fill="#0E2447" fill-opacity=".9" stroke-width="3"/>
+              <circle cx="190" cy="258" r="98" stroke-width="1" opacity=".7"/>
+              <circle cx="190" cy="258" r="42" stroke-width="2.5"/>
+              <circle cx="190" cy="258" r="12" stroke-width="2"/>
+              <g stroke-width="2.5">
+                <path d="M190 216v-40M190 300v40M148 258h-40M232 258h40"/>
+                <path d="M160 228l-28-28M220 228l28-28M160 288l-28 28M220 288l28 28"/>
+              </g>
+              <g fill="#C8A868" stroke="none" opacity=".9">
+                <circle cx="190" cy="152" r="2.5"/><circle cx="190" cy="364" r="2.5"/><circle cx="84" cy="258" r="2.5"/><circle cx="296" cy="258" r="2.5"/>
+                <circle cx="115" cy="183" r="2.5"/><circle cx="265" cy="183" r="2.5"/><circle cx="115" cy="333" r="2.5"/><circle cx="265" cy="333" r="2.5"/>
+              </g>
+              <rect x="300" y="222" width="16" height="72" rx="5" stroke-width="1.6" fill="#0E2447"/>
+              <g stroke-width="1.4" fill="#0E2447" fill-opacity=".92">
+                <rect x="136" y="76" width="54" height="54" rx="10"/>
+                <rect x="33" y="141" width="54" height="54" rx="10"/>
+                <rect x="240" y="141" width="54" height="54" rx="10"/>
+                <rect x="18" y="290" width="54" height="54" rx="10"/>
+                <rect x="256" y="290" width="54" height="54" rx="10"/>
+              </g>
+              <g stroke-width="1.6">
+                <path d="M155 92h10l6 6v16h-16zM165 92v6h6M159 106h8M159 111h8"/>
+                <path d="M50 160h20v16H50zM57 164l7 4-7 4z"/>
+                <path d="M262 160a5 5 0 0 1 10 0v6a5 5 0 0 1-10 0zM259 168a8 8 0 0 0 16 0M267 176v4M263 180h8"/>
+                <path d="M36 318l9-8 9 8M39 316v10h12v-10M43 326v-5h4v5"/>
+                <path d="M276 322a6 6 0 1 1 6-6l9-9M288 310l3 3M285 313l3 3"/>
+              </g>
+            </g>
+          </svg>
+
+          <div class="relative max-w-[600px]">
+            <div class="text-[11px] font-medium uppercase tracking-[.18em] text-gold">Patriva · Secure Vault</div>
+            <h1 id="vh-title" class="mt-3 font-serif text-[28px] font-normal leading-[1.2] lg:text-[36px] lg:leading-[46px]">
+              <span class="block text-white">My Vault</span>
+              <span class="block text-gold">Everything your family will need.</span>
+            </h1>
+            <p class="mt-9 max-w-[480px] text-[13.5px] leading-[23px] text-ink-200">A private, encrypted home for your obligations, assets, confidential records, and personal messages — organised now, and shared with your executor only when the conditions you define are met.</p>
+            <hr class="mt-[21px] max-w-[552px] border-0 border-t border-white/15">
+            <ul class="mt-[22px] flex list-none flex-wrap gap-x-6 gap-y-2 p-0 text-xs text-ink-200">
+              <li class="flex items-center gap-2">
+                <svg class="h-[13px] w-[13px] text-ink-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z"/></svg>
+                Encrypted &amp; private
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="h-[13px] w-[13px] text-ink-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+                Preview — activates after attestation
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="h-[13px] w-[13px] text-ink-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+                Saved automatically
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Your plan + Add Package — Requirement 1 -->
+        <section class="order-1 mt-0 flex flex-col gap-3 rounded-[10px] border border-gold bg-white px-5 py-4 shadow-card md:order-none md:mt-4 md:flex-row md:items-center md:justify-between" aria-label="Your plan">
+          <div class="min-w-0">
+            <div class="eyebrow">Your plan</div>
+            <div class="mt-1.5 flex flex-wrap items-center gap-2">
+              <span class="pkg-chip">
+                <svg class="h-3 w-3 text-ok" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>
+                Vault · $5.99 CAD/mo
+              </span>
+              <span class="pkg-chip" data-will="active" hidden>
+                <svg class="h-3 w-3 text-ok" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>
+                Islamic Will Package
+              </span>
+            </div>
+            <div class="mt-1.5 text-xs text-ink-500" data-will="available">Add a package to your current plan — your Vault subscription stays active.</div>
+            <div class="mt-1.5 text-xs text-ink-500" data-will="active" hidden>All available packages are on your plan.</div>
+          </div>
+          <a class="btn btn-primary btn-lg w-full shrink-0 md:w-auto" href="#add-package">
+            <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>
+            Add Package
+          </a>
+        </section>
+
+        <!-- Summary stats (as in the live screen) -->
+        <section class="order-3 mt-4 grid grid-cols-2 gap-3 md:order-none lg:grid-cols-4 lg:gap-4" aria-label="Vault summary">
+          <article class="stat">
+            <div class="flex items-center gap-2.5">
+              <span class="stat-ico"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l9-5 9 5M5 10v8M9 10v8M15 10v8M19 10v8M3 20h18"/></svg></span>
+              <span class="stat-label">Estate value</span>
+            </div>
+            <div class="stat-value">CAD 0</div>
+            <div class="stat-sub">across all assets</div>
+          </article>
+          <article class="stat">
+            <div class="flex items-center gap-2.5">
+              <span class="stat-ico"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18M5 21h14M12 6l-6 7h12z"/><path d="M6 13a3 3 0 0 0 6 0M12 13a3 3 0 0 0 6 0"/></svg></span>
+              <span class="stat-label">Obligations</span>
+            </div>
+            <div class="stat-value">CAD 342</div>
+            <div class="stat-sub">settled before distribution</div>
+          </article>
+          <article class="stat">
+            <div class="flex items-center gap-2.5">
+              <span class="stat-ico"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
+              <span class="stat-label">Sealed documents</span>
+            </div>
+            <div class="stat-value">1</div>
+            <div class="stat-sub">released on your trigger</div>
+          </article>
+          <article class="stat">
+            <div class="flex items-center gap-2.5">
+              <span class="stat-ico"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6c-2-1.5-4.5-2-8-2v14c3.5 0 6 .5 8 2 2-1.5 4.5-2 8-2V4c-3.5 0-6 .5-8 2z"/><path d="M12 6v14"/></svg></span>
+              <span class="stat-label">Final messages</span>
+            </div>
+            <div class="stat-value">0</div>
+            <div class="stat-sub">video &amp; audio</div>
+          </article>
+        </section>
+
+        <!-- Manage your vault -->
+        <h2 class="order-4 mb-4 mt-7 text-sm font-semibold text-ink md:order-none">Manage your vault</h2>
+        <section class="order-5 grid grid-cols-1 gap-4 md:order-none lg:grid-cols-2" aria-label="Manage your vault">
+          <a class="manage" href="#vault-home">
+            <span class="tile"><svg class="h-[21px] w-[21px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18M5 21h14M12 6l-6 7h12z"/><path d="M6 13a3 3 0 0 0 6 0M12 13a3 3 0 0 0 6 0"/></svg></span>
+            <span class="min-w-0 flex-1">
+              <span class="block text-[13.5px] font-semibold leading-5 text-ink">Obligations Register</span>
+              <span class="mt-0.5 block text-xs leading-[18px] text-ink-500">Outstanding debts, unpaid zakat and mahr — recorded for your executor.</span>
+            </span>
+            <svg class="h-4 w-4 shrink-0 text-gold-text" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          </a>
+          <a class="manage" href="#vault-home">
+            <span class="tile"><svg class="h-[21px] w-[21px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l9-5 9 5M5 10v8M9 10v8M15 10v8M19 10v8M3 20h18"/></svg></span>
+            <span class="min-w-0 flex-1">
+              <span class="block text-[13.5px] font-semibold leading-5 text-ink">Estate Inventory</span>
+              <span class="mt-0.5 block text-xs leading-[18px] text-ink-500">A living record of assets, accounts and property in one place.</span>
+            </span>
+            <svg class="h-4 w-4 shrink-0 text-gold-text" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          </a>
+          <a class="manage" href="#vault-home">
+            <span class="tile"><svg class="h-[21px] w-[21px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.2" fill="currentColor"/></svg></span>
+            <span class="min-w-0 flex-1">
+              <span class="block text-[13.5px] font-semibold leading-5 text-ink">Sealed Disclosures</span>
+              <span class="mt-0.5 block text-xs leading-[18px] text-ink-500">Private notes and credentials, released only when needed.</span>
+            </span>
+            <svg class="h-4 w-4 shrink-0 text-gold-text" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          </a>
+          <a class="manage" href="#vault-home">
+            <span class="tile"><svg class="h-[21px] w-[21px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16"/><path d="M6 16.5 16.5 6a2 2 0 0 1 2.8 2.8L8.8 19.3 5 20z"/></svg></span>
+            <span class="min-w-0 flex-1">
+              <span class="block text-[13.5px] font-semibold leading-5 text-ink">Final Words</span>
+              <span class="mt-0.5 block text-xs leading-[18px] text-ink-500">Personal wishes and guidance for those you leave behind.</span>
+            </span>
+            <svg class="h-4 w-4 shrink-0 text-gold-text" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          </a>
+        </section>
+
+        <hr class="order-last mt-8 border-0 border-t border-line md:order-none">
+        <p class="order-last mt-6 text-center text-[11.5px] text-ink-500 md:order-none">The Muslim Will is a limited scope document generation service. It is not a law firm and does not provide legal advice.</p>
+      </section>
+
+      <!-- ======================================================
+           VIEW: add-package  (#add-package) — packages available to ADD
+           ====================================================== -->
+      <section id="view-add-package" class="view" data-title="My Vault" data-nav="vault" data-sidebar="post" hidden>
+        <a class="back-link" href="#vault-home">
+          <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
+          Back to My Vault
+        </a>
+        <h1 class="mt-3 font-serif text-2xl font-normal leading-tight text-ink lg:text-[28px]">Add a package</h1>
+        <p class="mt-1.5 max-w-[560px] text-[13.5px] leading-[22px] text-ink-700">Choose what to add to your plan. Your Vault subscription stays active — nothing is replaced.</p>
+
+        <section class="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2" aria-label="Available packages">
+
+          <!-- Islamic Will — purchasable -->
+          <article class="card border-gold">
+            <div class="tile">
+              <svg class="h-[21px] w-[21px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M10 13h6M10 17h6"/></svg>
+            </div>
+            <h2 class="mb-2 mt-[18px] font-serif text-xl font-medium leading-[27px] md:text-[22px]">Islamic Will Package</h2>
+            <p class="m-0 max-w-[450px] text-[13.5px] leading-[21.5px] text-ink-700">A guided will aligned with Islamic inheritance principles and your provincial requirements — with scholar and conformity review.</p>
+            <ul class="mt-3 flex list-none flex-col gap-1.5 p-0 text-[13px] text-ink-700">
+              <li class="flex items-center gap-2"><svg class="h-3.5 w-3.5 shrink-0 text-ok" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>Guided questionnaire</li>
+              <li class="flex items-center gap-2"><svg class="h-3.5 w-3.5 shrink-0 text-ok" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>Scholar and conformity review</li>
+              <li class="flex items-center gap-2"><svg class="h-3.5 w-3.5 shrink-0 text-ok" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>Province-specific signing instructions</li>
+            </ul>
+            <div class="mt-5 flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div class="flex items-baseline gap-1.5">
+                <span class="font-serif text-2xl leading-7 text-ink">$99</span>
+                <span class="text-xs text-ink-500">CAD · one-time</span>
+              </div>
+              <a class="btn btn-primary btn-lg w-full sm:w-auto" href="#checkout" data-will="available">Add Package</a>
+              <span class="inline-flex items-center gap-1.5 text-[13px] font-medium text-ok" data-will="active" hidden>
+                <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>
+                Active — on your plan
+              </span>
+            </div>
+          </article>
+
+          <!-- Vault — already owned, not purchasable again -->
+          <article class="card">
+            <div class="tile">
+              <svg class="h-[21px] w-[21px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="12" cy="12" r="3.2"/><path d="M12 8.8v-1.6M12 16.8v-1.6M8.8 12H7.2M16.8 12h-1.6"/></svg>
+            </div>
+            <h2 class="mb-2 mt-[18px] flex flex-wrap items-center gap-[11px] font-serif text-xl font-medium leading-[27px] md:text-[22px]"><span>My Vault</span><span class="pill">Active</span></h2>
+            <p class="m-0 max-w-[450px] text-[13.5px] leading-[21.5px] text-ink-700">Obligations, assets, sealed disclosures and final words — your executor's single source of truth.</p>
+            <div class="mt-5 flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div class="flex items-baseline gap-1.5">
+                <span class="font-serif text-2xl leading-7 text-ink">$5.99</span>
+                <span class="text-xs text-ink-500">CAD /mo · renews Sep 30, 2026</span>
+              </div>
+              <span class="inline-flex items-center gap-1.5 text-[13px] font-medium text-ok">
+                <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>
+                Already on your plan
+              </span>
+            </div>
+          </article>
+
+        </section>
+
+        <p class="mt-5 text-xs text-ink-500">Need to change or cancel your Vault subscription instead? Go to <a class="font-medium text-gold-text underline underline-offset-2" href="#">My Profile → Plans &amp; Subscriptions</a>.</p>
+      </section>
+
+      <!-- ======================================================
+           VIEW: checkout  (#checkout) — confirm + pay for the Will package
+           ====================================================== -->
+      <section id="view-checkout" class="view" data-title="My Vault" data-nav="vault" data-sidebar="post" hidden>
+        <a class="back-link" href="#add-package">
+          <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
+          Back to packages
+        </a>
+        <h1 class="mt-3 font-serif text-2xl font-normal leading-tight text-ink lg:text-[28px]">Add Islamic Will Package</h1>
+        <p class="mt-1.5 max-w-[560px] text-[13.5px] leading-[22px] text-ink-700">Confirm your purchase. Your Vault subscription stays active and is not charged today.</p>
+
+        <div class="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-[1fr_360px]">
+
+          <!-- Payment -->
+          <form id="pay-form" class="card w-full !items-stretch" novalidate>
+            <h2 class="text-[13.5px] font-semibold text-ink">Payment method</h2>
+
+            <div id="pay-error" class="alert-danger mt-3" role="alert" hidden>
+              <svg class="mt-0.5 h-4 w-4 shrink-0 text-danger" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 5v3.5M8 11h.01"/></svg>
+              <span><strong class="font-semibold">Payment didn't go through.</strong> Your card was declined and <strong class="font-semibold">no package was added</strong>. Try another card or contact your bank — your Vault subscription is unaffected.</span>
+            </div>
+
+            <div class="mt-3 flex flex-col gap-2">
+              <label class="choice">
+                <input class="mt-0.5 accent-[#C8A868]" type="radio" name="pm" value="saved" checked>
+                <span class="min-w-0 flex-1">
+                  <span class="flex items-center gap-2 text-sm font-medium text-ink">Visa •••• 4242 <span class="rounded-[3px] border border-line px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[.08em] text-ink-500">Saved</span></span>
+                  <span class="mt-0.5 block text-xs text-ink-500">Expires 08/28 · used for your Vault subscription</span>
+                </span>
+              </label>
+              <label class="choice">
+                <input class="mt-0.5 accent-[#C8A868]" type="radio" name="pm" value="new">
+                <span class="min-w-0 flex-1">
+                  <span class="block text-sm font-medium text-ink">Use a different card</span>
+                </span>
+              </label>
+            </div>
+
+            <div id="new-card" class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2" hidden>
+              <label class="sm:col-span-2"><span class="mb-1 block text-xs font-medium text-ink-700">Card number</span><input class="field" inputmode="numeric" placeholder="1234 5678 9012 3456" autocomplete="cc-number"></label>
+              <label><span class="mb-1 block text-xs font-medium text-ink-700">Expiry</span><input class="field" inputmode="numeric" placeholder="MM / YY" autocomplete="cc-exp"></label>
+              <label><span class="mb-1 block text-xs font-medium text-ink-700">CVC</span><input class="field" inputmode="numeric" placeholder="123" autocomplete="cc-csc"></label>
+              <label class="sm:col-span-2"><span class="mb-1 block text-xs font-medium text-ink-700">Name on card</span><input class="field" placeholder="Nisreen M." autocomplete="cc-name"></label>
+            </div>
+
+            <label class="mt-4 flex items-center gap-2 rounded-md border border-dashed border-ink-200 px-3 py-2 text-xs text-ink-500">
+              <input id="sim-decline" class="accent-[#C0392B]" type="checkbox">
+              <span><strong class="font-semibold text-ink-700">Simulation:</strong> make this payment fail (declined card)</span>
+            </label>
+
+            <button id="pay-btn" class="btn btn-primary btn-lg mt-4 w-full" type="submit">Confirm and pay $99.00 CAD</button>
+            <p class="mt-2 text-[11.5px] leading-4 text-ink-500">Charged once. The package is added to your plan immediately after a successful payment.</p>
+          </form>
+
+          <!-- Order summary -->
+          <aside class="card !items-stretch self-start" aria-label="Order summary">
+            <h2 class="text-[13.5px] font-semibold text-ink">Order summary</h2>
+            <div class="mt-3 flex items-start justify-between gap-3 text-sm">
+              <span class="text-ink">Islamic Will Package<span class="block text-xs text-ink-500">One-time</span></span>
+              <span class="font-medium text-ink">$99.00</span>
+            </div>
+            <div class="mt-3 flex items-start justify-between gap-3 text-sm">
+              <span class="text-ink-500">Vault subscription<span class="block text-xs">Stays active · renews Sep 30</span></span>
+              <span class="text-ink-500">$0.00 today</span>
+            </div>
+            <hr class="my-3 border-0 border-t border-line">
+            <div class="flex items-baseline justify-between text-sm">
+              <span class="font-semibold text-ink">Due today</span>
+              <span class="font-serif text-xl text-ink">$99.00 <span class="font-sans text-xs text-ink-500">CAD</span></span>
+            </div>
+            <div class="mt-3 flex items-start gap-2 rounded-md bg-gold-tint px-3 py-2 text-xs leading-4 text-ink-700">
+              <svg class="mt-0.5 h-3.5 w-3.5 shrink-0 text-gold-text" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 7v4M8 5h.01"/></svg>
+              <span>This adds a package. It does not change, replace or cancel your Vault subscription.</span>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ======================================================
+           VIEW: purchase-success  (#purchase-success)
+           ====================================================== -->
+      <section id="view-purchase-success" class="view" data-title="My Vault" data-nav="vault" data-sidebar="post" hidden>
+        <div class="card mx-auto mt-4 max-w-[560px] !items-center px-6 py-10 text-center sm:px-10">
+          <div class="grid h-14 w-14 place-items-center rounded-full bg-gold-tint text-ok">
+            <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+          </div>
+          <h1 class="mt-4 font-serif text-2xl font-normal leading-tight text-ink lg:text-[28px]">Islamic Will Package added</h1>
+          <p class="mt-2 max-w-[420px] text-[13.5px] leading-[22px] text-ink-700">It's now on your plan alongside your Vault, which stays active. A receipt for $99.00 CAD was sent to your email.</p>
+          <div class="mt-6 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+            <a class="btn btn-primary btn-lg" href="#home">Start my Islamic Will</a>
+            <a class="btn btn-lg" href="#vault-home">Back to My Vault</a>
+          </div>
+          <a class="mt-5 text-xs text-ink-400 underline underline-offset-2 hover:text-ink" href="#reset">Reset simulation</a>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  // ---------- Simulation state (persists in this browser) ----------
+  var SIM_KEY = 'mw-sim';
+  var sim = { will: 'available' };           // will: 'available' | 'active'
+  try { sim = Object.assign(sim, JSON.parse(localStorage.getItem(SIM_KEY) || '{}')); } catch (e) {}
+  function saveSim() { try { localStorage.setItem(SIM_KEY, JSON.stringify(sim)); } catch (e) {} }
+  function renderSim() {
+    // Elements tagged data-will="active|available" show only in that state.
+    document.querySelectorAll('[data-will]').forEach(function (el) {
+      el.toggleAttribute('hidden', el.getAttribute('data-will') !== sim.will);   // works for SVG too
+    });
+  }
+
+  // ---------- Hash router: #home (default) / #vault / #vault-home / #add-package / #checkout / #purchase-success ----------
+  (function () {
+    var views = document.querySelectorAll('.view');
+    var crumb = document.getElementById('crumb');
+    function route() {
+      var raw = (location.hash || '#home').slice(1);
+      var name = raw.split('?')[0];
+      var query = raw.split('?')[1] || '';
+
+      if (name === 'reset') { sim.will = 'available'; saveSim(); location.replace('#vault-home'); return; }
+
+      var view = document.getElementById('view-' + name);
+      if (!view) { name = 'home'; view = document.getElementById('view-home'); }
+      views.forEach(function (v) { v.hidden = v !== view; });
+
+      crumb.textContent = view.getAttribute('data-title') || 'My Estate Plan';
+
+      // Sidebar variant: 'pre' (not subscribed: PREVIEW chips) vs 'post' (subscribed: Dashboard, My Bridge locked)
+      var mode = view.getAttribute('data-sidebar') || 'pre';
+      document.querySelectorAll('[data-sub]').forEach(function (el) { el.toggleAttribute('hidden', el.getAttribute('data-sub') !== mode); });
+      document.querySelectorAll('[data-sub-text]').forEach(function (el) {
+        var t = el.getAttribute('data-sub-text').split('|'); el.textContent = mode === 'post' ? t[1] : t[0];
+      });
+      var main = document.getElementById('main');
+      main.className = main.getAttribute(view.hasAttribute('data-wide') ? 'data-class-wide' : 'data-class-normal');
+
+      var nav = view.getAttribute('data-nav') || 'home';
+      document.querySelectorAll('[data-nav-id]').forEach(function (el) {
+        var on = el.getAttribute('data-nav-id') === nav;
+        el.classList.toggle('is-active', on);
+        if (on) el.setAttribute('aria-current', 'page'); else el.removeAttribute('aria-current');
+      });
+
+      // checkout extras: ?error=1 pre-renders the declined state (handy for screenshots)
+      var err = document.getElementById('pay-error');
+      if (err) err.hidden = !(name === 'checkout' && /error=1/.test(query));
+
+      renderSim();
+      window.scrollTo(0, 0);
+    }
+    window.addEventListener('hashchange', route);
+    route();
+  })();
+
+  // ---------- Checkout behaviour ----------
+  (function () {
+    var form = document.getElementById('pay-form');
+    if (!form) return;
+    var newCard = document.getElementById('new-card');
+    var err = document.getElementById('pay-error');
+    var btn = document.getElementById('pay-btn');
+    form.querySelectorAll('input[name="pm"]').forEach(function (r) {
+      r.addEventListener('change', function () { newCard.hidden = form.pm.value !== 'new'; });
+    });
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      err.hidden = true;
+      btn.disabled = true; btn.textContent = 'Processing…';
+      setTimeout(function () {
+        btn.disabled = false; btn.textContent = 'Confirm and pay $99.00 CAD';
+        if (document.getElementById('sim-decline').checked) {
+          err.hidden = false;
+          err.scrollIntoView({ block: 'center', behavior: 'smooth' });
+          return;                                   // nothing activated on failure
+        }
+        sim.will = 'active'; saveSim();             // package added only after a successful payment
+        location.hash = '#purchase-success';
+      }, 700);
+    });
+  })();
+
+  // Mobile drawer: menu button slides the sidebar in; backdrop / Escape / navigating closes it.
+  (function () {
+    var sidebar = document.getElementById('sidebar');
+    var backdrop = document.getElementById('backdrop');
+    var menuBtn = document.getElementById('menu-btn');
+    function setOpen(open) {
+      sidebar.classList.toggle('-translate-x-full', !open);
+      backdrop.classList.toggle('opacity-0', !open);
+      backdrop.classList.toggle('pointer-events-none', !open);
+      menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    }
+    menuBtn.addEventListener('click', function () { setOpen(menuBtn.getAttribute('aria-expanded') !== 'true'); });
+    backdrop.addEventListener('click', function () { setOpen(false); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setOpen(false); });
+    window.addEventListener('hashchange', function () { setOpen(false); });
+  })();
+
+  // Sidebar groups: chevron collapses / expands the sub-list.
+  document.querySelectorAll('.nav-toggle').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', open ? 'false' : 'true');
+      var list = document.getElementById(btn.getAttribute('aria-controls'));
+      if (list) list.classList.toggle('hidden', open);
+    });
+  });
+</script>
+</body>
+</html>

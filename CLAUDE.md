@@ -46,7 +46,9 @@
 - Screenshot a view with its hash: `SHOT_SIZE=1504,900 node screenshot.mjs "http://localhost:3000/#vault" label`.
 - Add new screens as new views (and new hash routes) — don't fork into separate HTML files, so the simulated flows stay navigable.
 
-## Publishing (Claude Artifact)
+## Publishing (GitHub + Claude Artifact)
+- GitHub (private): https://github.com/Nisreen24/muslim-will-simulation — branch `main`. Commit + push when the user asks for changes to be uploaded.
+
 - Published at https://claude.ai/code/artifact/02d95a5d-43c5-4d8f-9d75-b63d031ab5f8 (private; the user shares it from the page's share menu).
 - To republish after edits: `node artifact-copy.mjs` (strips the html/head/body wrapper, moves body classes to a `#app-root` div), then publish that copy with the Artifact tool passing the URL above as `url` so the link stays the same.
 

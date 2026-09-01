@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Muslim Will — Client Requirements Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--navy:#0D1B32;--gold:#C8A064;--goldDk:#A8844A;--body:#2C2A26;--muted:#6B6760;--border:#EDEAE3;--inset:#F7F5F0}
+  *{box-sizing:border-box}
+  body{margin:0;background:#F1EEE7;font-family:'Inter',system-ui,sans-serif;color:var(--body)}
+  .page{max-width:860px;margin:0 auto;padding:48px 28px 80px}
+  h1{font-family:Georgia,serif;font-weight:500;font-size:30px;color:var(--navy);margin:0 0 8px}
+  .lead{font-size:14px;color:var(--muted);line-height:1.65;margin:0 0 34px;max-width:640px}
+  h2{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--goldDk);margin:34px 0 12px}
+  .card{display:flex;align-items:center;gap:16px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:18px 22px;margin-bottom:10px;text-decoration:none;color:inherit;transition:transform .15s}
+  .card:hover{transform:translateY(-1px)}
+  .num{width:34px;height:34px;border-radius:50%;background:var(--navy);color:var(--gold);font-weight:600;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .num.doc{background:var(--inset);color:var(--goldDk);border:1px solid var(--border)}
+  .t b{display:block;font-size:15px;font-weight:600;color:var(--navy)}
+  .t span{display:block;font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.5}
+  .arrow{margin-left:auto;color:var(--goldDk);flex-shrink:0}
+  .note{background:#fff;border:1px dashed var(--border);border-radius:10px;padding:16px 20px;font-size:12.5px;color:var(--muted);line-height:1.7;margin-top:34px}
+  .note b{color:var(--navy)}
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Muslim Will — Client Requirements Preview</h1>
+  <p class="lead">Click-through HTML previews of the two client requirements, built on the product's real page markup and CSS (gold build). Requirement&nbsp;1 lives on the My&nbsp;Vault dashboard; Requirement&nbsp;2 lives in My&nbsp;Profile → Family&nbsp;Plan. Payment and activation reuse the existing flow unchanged.</p>
+
+  <h2>Requirement 1 — Add Package (walk the flow in order)</h2>
+  <a class="card" href="preview-vault-dashboard.html"><span class="num">1</span><span class="t"><b>My Vault dashboard</b><span>The "Your plan" strip with the Add Package button — visible right after login, above the vault sections.</span></span><svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+  <a class="card" href="preview-add-package.html"><span class="num">2</span><span class="t"><b>Add a package</b><span>Packages available to ADD — the owned package shows as Active and cannot be bought again.</span></span><svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+  <a class="card" href="preview-checkout.html"><span class="num">3</span><span class="t"><b>Checkout</b><span>The existing Pricing/Checkout page (Stripe) — unchanged; terms checkbox gates the pay button.</span></span><svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+  <a class="card" href="preview-success.html"><span class="num">4</span><span class="t"><b>Payment success</b><span>The existing PaymentSuccess page — subscription stays active alongside the new package.</span></span><svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+  <a class="card" href="preview-profile.html"><span class="num">5</span><span class="t"><b>My Profile · My Plan</b><span>The purchased package appears on the plan alongside the untouched subscription.</span></span><svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+
+  <h2>Requirement 2 — Family Subscription seats</h2>
+  <a class="card" href="preview-profile-family.html"><span class="num">6</span><span class="t"><b>My Profile · Family Plan (interactive)</b><span>Seats / Used / Available counters + Add Family Member with the full invite flow — try it: invite, resend, cancel, simulate acceptance.</span></span><svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+  <a class="card" href="preview-family-states.html"><span class="num doc">§</span><span class="t"><b>Seat states &amp; validations — developer reference</b><span>Every UI state (empty, pending, one seat left, complete, expired) plus the full validation table with exact messages.</span></span><svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+
+  <div class="note">
+    <b>Notes for the dev team:</b> pages reuse the product's own CSS (<code>real/css/</code>, exported from the repo's gold build) so spacing, colors and type match production. Package names and prices shown are samples — real data comes from the DB. The additive server-side counterpart for Requirement&nbsp;1 (4 files, branch <code>feature/vault-add-package</code> on Azure DevOps) hands purchases to the existing <code>Pricing/SelectPlan</code> flow. Member removal for Requirement&nbsp;2 is <b>on hold</b> pending a client decision — see the on-hold row in the validations table.
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,85 @@
+/* ════════════════════════════════════════════════════════════════════
+   Design tokens — single source of truth for color, radius & spacing.
+   Symmetric scales so buttons, cards, inputs, panels etc. share the
+   same corner rounding and the same rhythm across the whole app.
+
+   Loaded globally in _Layout and in the standalone (Layout=null) auth
+   pages. Every element still carries a literal fallback in var(...),
+   so the correct symmetric value applies even where this file isn't
+   loaded — this file lets you re-tune the whole system from one place.
+   ════════════════════════════════════════════════════════════════════ */
+
+:root {
+    /* ── Brand palette (corporate navy + slate) ──────────────────────
+       The product reads as professional legal/financial services:
+       a deep navy carries structure and authority, a single blue
+       accent carries action, and cool slate neutrals stay out of the
+       way. Nothing here should re-introduce a warm/ornamental tone —
+       the older cream-and-gold system is fully retired.               */
+
+    /* Primary — headers, nav rail, filled buttons, document chrome */
+    --brand-primary: #1E3A5F;
+    --brand-primary-2: #2A4A73;   /* raised surfaces on the primary   */
+    --brand-primary-3: #345C8A;   /* hover / one step lighter         */
+    --brand-primary-dark: #16304D;/* deepest — scrollbars, footers    */
+
+    /* Accent — links, focus, selected state, primary CTA emphasis.
+       Three tones because one blue cannot carry every role the old gold
+       did. --brand-accent is the on-light tone (links, borders, focus
+       rings). --brand-accent-dark is the button fill, dark enough for
+       white label text (5.8:1). --brand-accent-on-dark is the tone for
+       accent text and icons sitting ON the navy surfaces — the mid blue
+       only reaches 3.0:1 there, which is below the 4.5:1 the old gold
+       comfortably cleared. */
+    --brand-accent: #2F80ED;
+    --brand-accent-light: #5B9CF5;
+    --brand-accent-dark: #1F63C4;
+    --brand-accent-on-dark: #8FB9F2;
+
+    /* Neutrals — cool slate, never warm */
+    --surface: #F5F7FA;           /* page background                  */
+    --surface-2: #EDF1F7;         /* subtle fills, table stripes      */
+    --line: #E2E8F0;             /* borders, dividers                */
+    --ink: #0F172A;              /* body text                        */
+    --ink-muted: #64748B;        /* secondary text, captions         */
+
+    /* Status */
+    --status-success: #2E7D5B;
+    --status-warning: #C2762B;
+    --status-danger: #C0392B;
+    --status-info: #2F80ED;
+
+    /* ── Typography ──────────────────────────────────────────────────
+       One corporate sans across the whole product. The previous
+       serif display face (and its Georgia fallback) is retired; both
+       --serif and --sans resolve to the same stack so any legacy
+       var(--serif) call site stays visually consistent.              */
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    --font-display: var(--font-sans);
+
+    /* ── Elevation (soft, low — no heavy drop shadows) ── */
+    --shadow-sm: 0 1px 2px rgba(15, 23, 42, .06);
+    --shadow-md: 0 2px 8px rgba(15, 23, 42, .08);
+    --shadow-lg: 0 8px 24px rgba(15, 23, 42, .10);
+
+    /* ── Radius scale (symmetric, role-based) ── */
+    --radius-xs: 3px;      /* chips, tiny toggles, progress bars      */
+    --radius-sm: 6px;      /* buttons, inputs, small controls         */
+    --radius-md: 8px;      /* cards, panels                           */
+    --radius-lg: 12px;     /* large / feature cards, modals           */
+    --radius-pill: 999px;  /* pills, tags, fully-rounded buttons      */
+    --radius-circle: 50%;  /* avatars, dots, circular elements        */
+
+    /* ── Spacing scale (4px grid) ── */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-7: 28px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+    --space-14: 56px;
+}

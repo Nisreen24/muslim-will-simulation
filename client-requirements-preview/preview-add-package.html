@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preview — Add Package page (gold build)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="real/css/customer-dashboard-gold.css" rel="stylesheet">
+<style>
+  body{margin:0;font-family:'Inter',sans-serif}
+  /* the live build lets the content fill the width (no 1080px cap) */
+  .cdash__content{max-width:none}
+  /* Gold-era values for the design-token variables the page reads */
+  :root{--brand-primary:#0D1B32;--brand-accent:#C8A064;--brand-accent-dark:#A8844A;--ink-muted:#6B6760;--line:#EDEAE3}
+  .pv-avatar{width:30px;height:30px;border-radius:50%;background:#C8A064;color:#0D1B32;font-size:11.5px;font-weight:600;display:flex;align-items:center;justify-content:center;letter-spacing:.02em}
+  .pv-user{display:inline-flex;align-items:center;gap:9px;background:#fff;border:1px solid #EDEAE3;border-radius:999px;padding:5px 11px 5px 6px}
+  .pv-bell{position:relative;background:none;border:none;cursor:pointer;padding:6px}
+  .pv-bell .dot{position:absolute;top:0;right:0;min-width:15px;height:15px;border-radius:999px;background:#C8A064;color:#0D1B32;font-size:9px;font-weight:700;line-height:15px;text-align:center;padding:0 3px}
+</style>
+</head>
+<body>
+<div class="cdash">
+
+    <!-- ══ Sidebar (same shell) ══ -->
+    <aside class="cdash__rail">
+        <div class="cdash-brand">
+            <img src="real/images/patriva-logo.svg" width="30" height="32" alt="">
+            <div class="cdash-brand__text">
+                <span class="cdash-brand__name">Muslim Will</span>
+                <span class="cdash-brand__sub">a product of Patriva</span>
+            </div>
+        </div>
+        <nav class="cdash-nav">
+            <a href="#" class="cdash-nav__item">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3l9 9M5 10v10a1 1 0 001 1h12a1 1 0 001-1V10M10 21V14h4v7"/></svg>
+                <span class="cdash-nav__label" style="color:rgba(255,255,255,0.9)">Dashboard</span>
+            </a>
+            <div class="cdash-nav__spacer"></div>
+            <button type="button" class="cdash-nav__item" disabled style="cursor:not-allowed;opacity:0.55">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zM14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+                <span class="cdash-nav__label" style="color:rgba(255,255,255,0.5)">My Bridge</span>
+                <span class="cdash-nav__chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11h14a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2v-7a2 2 0 012-2zM7 11V7a5 5 0 0110 0v4"/></svg></span>
+            </button>
+            <a href="#" class="cdash-nav__item cdash-nav__item--active">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#DDB97A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zM12 12a3 3 0 100-6 3 3 0 000 6zM12 12v3M9 18l3-3 3 3"/></svg>
+                <span class="cdash-nav__label" style="color:rgba(255,255,255,0.9)">My Vault</span>
+            </a>
+            <div class="cdash-nav__group">
+                <a href="#" class="cdash-subitem"><span class="cdash-dot cdash-dot--todo"></span><span class="cdash-subitem__label">Obligations Register</span></a>
+                <a href="#" class="cdash-subitem"><span class="cdash-dot cdash-dot--todo"></span><span class="cdash-subitem__label">Estate Inventory</span></a>
+                <a href="#" class="cdash-subitem"><span class="cdash-dot cdash-dot--todo"></span><span class="cdash-subitem__label">Sealed Disclosures</span></a>
+                <a href="#" class="cdash-subitem"><span class="cdash-dot cdash-dot--todo"></span><span class="cdash-subitem__label">Final Words</span></a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- ══ Main ══ -->
+    <main class="cdash__main">
+        <div class="cdash__topbar">
+            <p class="cdash__breadcrumb">My Vault</p>
+            <div class="cdash__topbar-actions">
+                <button type="button" class="pv-bell">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2C2A26" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+                    <span class="dot">1</span>
+                </button>
+                <button type="button" class="cdash-help">Get help</button>
+                <span class="pv-user"><span class="pv-avatar">NA</span><span style="font-size:13.5px;font-weight:500;color:#2C2A26">Nisreen</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B6760" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                </span>
+            </div>
+        </div>
+
+        <!-- Real markup from Views/MyPackage/AddPackage.cshtml, sample package data -->
+        <div class="cdash__content">
+        <div style="max-width:1040px;margin:0 auto;font-family:'Inter',sans-serif;--pkg-primary:var(--brand-primary, #1E3A5F);--pkg-accent:var(--brand-accent, #2F80ED);--pkg-accent-dark:var(--brand-accent-dark, #1F63C4);--pkg-muted:var(--ink-muted, #64748B);--pkg-line:var(--line, #E2E8F0);">
+
+            <a href="preview-vault-dashboard.html" style="display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-size:13px;font-weight:500;color:var(--pkg-muted);margin-bottom:12px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 19l-7-7 7-7"/></svg>
+                Back to My Vault
+            </a>
+
+            <h1 style="font-family:'Inter',serif;font-weight:500;font-size:28px;color:var(--pkg-primary);margin:0 0 8px;">Add a package</h1>
+            <p style="font-size:14px;color:var(--pkg-muted);margin:0 0 24px;line-height:1.6;max-width:560px;">Choose what to add to your plan. Your current subscription stays active — nothing is changed or replaced.</p>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:14px;align-items:stretch;">
+
+                <!-- purchasable package -->
+                <div style="background:#FFFFFF;border:1px solid var(--pkg-accent);border-radius:var(--radius-md, 8px);padding:24px;display:flex;flex-direction:column;">
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+                        <h3 style="font-family:'Inter',serif;font-weight:600;font-size:21px;color:var(--pkg-primary);margin:0;">The Muslim Will</h3>
+                    </div>
+                    <p style="font-size:13px;line-height:1.55;color:var(--pkg-muted);margin:0 0 16px;flex:1;">A guided will aligned with inheritance principles and your provincial requirements — with specialist and conformity review.</p>
+                    <p style="font-family:'Inter',serif;font-weight:600;font-size:22px;color:var(--pkg-primary);margin:0 0 14px;">
+                        $149<span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:400;color:var(--pkg-muted);"> CAD one-time</span>
+                    </p>
+                    <a href="preview-checkout.html" style="width:100%;box-sizing:border-box;justify-content:center;font-family:'Inter',sans-serif;font-size:13.5px;font-weight:500;padding:12px 22px;min-height:44px;border-radius:var(--radius-sm, 6px);cursor:pointer;border:none;display:inline-flex;align-items:center;gap:8px;background:var(--pkg-accent-dark);color:#FFFFFF;text-decoration:none;">
+                        Add Package
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+
+                <!-- family package -->
+                <div style="background:#FFFFFF;border:1px solid var(--pkg-accent);border-radius:var(--radius-md, 8px);padding:24px;display:flex;flex-direction:column;">
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+                        <h3 style="font-family:'Inter',serif;font-weight:600;font-size:21px;color:var(--pkg-primary);margin:0;">Family Plan</h3>
+                        <span style="font-size:10px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--pkg-accent-dark);border:1px solid var(--pkg-line);border-radius:var(--radius-pill, 999px);padding:2px 8px;">Family</span>
+                    </div>
+                    <p style="font-size:13px;line-height:1.55;color:var(--pkg-muted);margin:0 0 16px;flex:1;">Bring your family under one subscription — each member keeps a private, separate space.</p>
+                    <p style="font-family:'Inter',serif;font-weight:600;font-size:22px;color:var(--pkg-primary);margin:0 0 14px;">
+                        $4.99<span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:400;color:var(--pkg-muted);"> CAD / member / month</span>
+                    </p>
+                    <a href="preview-checkout.html" style="width:100%;box-sizing:border-box;justify-content:center;font-family:'Inter',sans-serif;font-size:13.5px;font-weight:500;padding:12px 22px;min-height:44px;border-radius:var(--radius-sm, 6px);cursor:pointer;border:none;display:inline-flex;align-items:center;gap:8px;background:var(--pkg-accent-dark);color:#FFFFFF;text-decoration:none;">
+                        Add Package
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+
+                <!-- owned package -->
+                <div style="background:#FFFFFF;border:1px solid var(--pkg-line);border-radius:var(--radius-md, 8px);padding:24px;display:flex;flex-direction:column;">
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+                        <h3 style="font-family:'Inter',serif;font-weight:600;font-size:21px;color:var(--pkg-primary);margin:0;">My Vault</h3>
+                        <span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#2E7D5B;margin-left:auto;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2E7D5B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>
+                            Active — on your plan
+                        </span>
+                    </div>
+                    <p style="font-size:13px;line-height:1.55;color:var(--pkg-muted);margin:0 0 16px;flex:1;">Obligations, assets, sealed disclosures and final words — your executor's single source of truth.</p>
+                    <p style="font-family:'Inter',serif;font-weight:600;font-size:22px;color:var(--pkg-primary);margin:0 0 14px;">
+                        $5.99<span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:400;color:var(--pkg-muted);"> CAD / month</span>
+                    </p>
+                    <div style="width:100%;text-align:center;font-size:13.5px;font-weight:500;padding:12px 22px;min-height:44px;border-radius:var(--radius-sm, 6px);border:1px solid var(--pkg-line);color:#94A3B8;box-sizing:border-box;">
+                        Included in your plan
+                    </div>
+                </div>
+            </div>
+
+            <p style="font-size:11px;color:var(--pkg-muted);margin:32px 0 0;text-align:center;line-height:1.5;padding-top:24px;border-top:1px solid var(--pkg-line);">
+                The Muslim Will is a limited scope document generation service. It is not a law firm and does not provide legal advice.
+            </p>
+        </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

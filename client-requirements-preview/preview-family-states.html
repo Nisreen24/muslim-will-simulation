@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Family Plan — Seat States &amp; Validations (dev reference)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--navy:#0D1B32;--gold:#C8A064;--goldDk:#A8844A;--body:#2C2A26;--muted:#6B6760;--border:#EDEAE3;--inset:#F7F5F0;--green:#5B8C6B;--greenBg:rgba(91,140,107,.14);--amber:#E78A4E;--amberBg:rgba(231,138,78,.14);--red:#CC1E1E;--redBg:rgba(204,30,30,.07)}
+  *{box-sizing:border-box}
+  body{margin:0;background:#F1EEE7;font-family:'Inter',system-ui,sans-serif;color:var(--body)}
+  .page{max-width:1120px;margin:0 auto;padding:40px 28px 80px}
+  h1{font-family:Georgia,serif;font-weight:500;font-size:30px;color:var(--navy);margin:0 0 6px}
+  .lead{font-size:13.5px;color:var(--muted);margin:0 0 8px;line-height:1.6;max-width:760px}
+  .formula{display:inline-block;background:var(--navy);color:#fff;border-radius:6px;padding:10px 16px;font-size:13px;font-weight:500;margin:10px 0 34px}
+  .formula b{color:var(--gold)}
+
+  .state{margin:0 0 44px}
+  .state-head{display:flex;align-items:center;gap:12px;margin:0 0 6px}
+  .state-chip{background:var(--navy);color:var(--gold);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;border-radius:999px;padding:5px 13px}
+  .state-title{font-family:Georgia,serif;font-weight:500;font-size:21px;color:var(--navy);margin:0}
+  .when{font-size:12.5px;color:var(--muted);margin:0 0 14px}
+
+  /* mock of the Family plan card */
+  .mock{background:#fff;border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 6px 18px -12px rgba(13,27,50,.25)}
+  .mock-head{background:var(--navy);padding:16px 22px;display:flex;justify-content:space-between;align-items:flex-start}
+  .mock-head .eyebrow{font-size:10px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin:0 0 4px}
+  .mock-head h3{font-family:Georgia,serif;font-weight:500;font-size:21px;color:#fff;margin:0;line-height:1}
+  .badge{display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:600;padding:3px 8px;border-radius:3px;letter-spacing:.08em;text-transform:uppercase}
+  .badge.green{background:var(--greenBg);color:var(--green)}
+  .badge.amber{background:var(--amberBg);color:var(--amber)}
+  .badge.navy{background:rgba(13,27,50,.08);color:#4A5A74}
+  .badge.muted{background:rgba(13,27,50,.06);color:var(--muted)}
+  .stats{display:flex;gap:34px;flex-wrap:wrap;padding:18px 22px}
+  .stat .l{font-size:9.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0}
+  .stat .v{font-family:Georgia,serif;font-weight:500;font-size:26px;color:var(--navy);margin:5px 0 0;line-height:1}
+  .stat.gold .v{color:var(--goldDk)}
+  .stat.warn .v{color:var(--amber)}
+  .stat .n{font-size:11px;color:var(--muted);margin:5px 0 0}
+  .actions{border-top:1px solid var(--border);background:var(--inset);padding:12px 22px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .btn{font-weight:500;font-size:12.5px;padding:9px 15px;border-radius:6px;display:inline-flex;align-items:center;gap:7px;border:1px solid transparent;white-space:nowrap}
+  .btn-gold{background:var(--gold);color:var(--navy)}
+  .btn-gold.off{opacity:.5}
+  .warn-note{font-size:11.5px;font-weight:500;color:var(--amber);margin:0}
+  .rows{border-top:1px solid var(--border)}
+  .mrow{display:flex;align-items:center;gap:12px;padding:11px 22px;border-top:1px solid #F0EDE6;flex-wrap:wrap}
+  .mrow:first-child{border-top:none}
+  .av{width:30px;height:30px;border-radius:50%;background:var(--navy);color:var(--gold);font-size:10.5px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+  .av.ghost{background:var(--inset);border:1px dashed #D4D0C8;color:var(--muted)}
+  .av.slot{background:transparent;border:1.5px dashed #D4D0C8;color:transparent}
+  .mrow .who{flex:1;min-width:170px}
+  .mrow .who b{display:block;font-size:12.5px;font-weight:500;color:var(--navy)}
+  .mrow .who span{display:block;font-size:11.5px;color:var(--muted);margin-top:1px}
+  .lnk{font-size:11.5px;font-weight:500;color:var(--goldDk)}
+  .lnk.red{color:var(--red)}
+  .hint{padding:12px 22px;font-size:12px;color:var(--muted);border-top:1px solid #F0EDE6}
+
+  .notes{margin:12px 0 0;padding:14px 18px;background:#fff;border:1px dashed var(--border);border-radius:8px}
+  .notes p{font-size:10.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--goldDk);margin:0 0 8px}
+  .notes ul{margin:0;padding-left:18px}
+  .notes li{font-size:12.5px;line-height:1.7;color:var(--body)}
+  .notes code{background:var(--inset);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:11.5px;color:var(--navy)}
+
+  /* validations table */
+  h2.vtitle{font-family:Georgia,serif;font-weight:500;font-size:24px;color:var(--navy);margin:56px 0 6px}
+  .vwrap{overflow-x:auto;background:#fff;border:1px solid var(--border);border-radius:10px}
+  table{border-collapse:collapse;width:100%;min-width:900px}
+  th{font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:12px 14px;border-bottom:2px solid var(--border);background:var(--inset)}
+  td{font-size:12.5px;line-height:1.6;padding:12px 14px;border-bottom:1px solid #F0EDE6;vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td.msg{color:var(--navy);font-weight:500}
+  .src{display:inline-block;font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;border-radius:3px;padding:2px 7px}
+  .src.client{background:var(--greenBg);color:var(--green)}
+  .src.rec{background:rgba(13,27,50,.07);color:#4A5A74}
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Family Plan — Seat States &amp; Validations</h1>
+  <p class="lead">Developer reference for Business Requirement 2. Every state of the seats banner and the members list, with the exact UI behaviour and messages. Sample plan: <b>vault</b>, billed per member, owner always occupies seat&nbsp;1.</p>
+  <div class="formula">Available = Total seats − Used (owner + joined) − <b>Invitation Pending</b> &nbsp;·&nbsp; a pending invitation reserves its seat</div>
+
+  <!-- ══════════ STATE 1 ══════════ -->
+  <div class="state">
+    <div class="state-head"><span class="state-chip">State 1</span><h3 class="state-title">No family members yet</h3></div>
+    <p class="when">When: the owner just purchased the family plan and has not invited anyone. (2-seat plan)</p>
+    <div class="mock">
+      <div class="mock-head"><div><p class="eyebrow">Your family plan</p><h3>vault</h3></div><span class="badge green">Active</span></div>
+      <div class="stats">
+        <div class="stat"><p class="l">Seats</p><p class="v">2</p><p class="n">on your family plan</p></div>
+        <div class="stat"><p class="l">Used</p><p class="v">1</p><p class="n">1 owner · 0 joined · 0 pending</p></div>
+        <div class="stat gold"><p class="l">Available</p><p class="v">1</p><p class="n">seat ready to assign</p></div>
+      </div>
+      <div class="actions"><span class="btn btn-gold">＋ Add Family Member</span></div>
+      <div class="rows">
+        <div class="mrow"><span class="av">NA</span><span class="who"><b>Nisreen Abdelkader</b><span>nisreenabdelkader6@gmail.com</span></span><span class="badge navy">Owner · you</span></div>
+        <div class="mrow"><span class="av slot">·</span><span class="who"><b style="color:var(--muted);font-weight:400;">Empty seat</b><span>Not assigned yet</span></span><span class="badge muted">Available</span></div>
+      </div>
+      <div class="hint">No members yet — send your first invitation to fill your 1 available seat.</div>
+    </div>
+    <div class="notes"><p>Dev notes</p><ul>
+      <li><b>Add Family Member</b> is enabled.</li>
+      <li>Show the empty-seat placeholder row(s) so the owner sees what they paid for (one row per available seat).</li>
+      <li>Empty-state hint text adapts to the count: “…fill your N available seats”.</li>
+    </ul></div>
+  </div>
+
+  <!-- ══════════ STATE 2 ══════════ -->
+  <div class="state">
+    <div class="state-head"><span class="state-chip">State 2</span><h3 class="state-title">Invitation Pending (seat reserved)</h3></div>
+    <p class="when">When: an invitation was sent and not yet accepted. (2-seat plan → the pending invite reserves the last seat)</p>
+    <div class="mock">
+      <div class="mock-head"><div><p class="eyebrow">Your family plan</p><h3>vault</h3></div><span class="badge green">Active</span></div>
+      <div class="stats">
+        <div class="stat"><p class="l">Seats</p><p class="v">2</p><p class="n">on your family plan</p></div>
+        <div class="stat"><p class="l">Used</p><p class="v">1</p><p class="n">1 owner · 0 joined · 1 pending</p></div>
+        <div class="stat warn"><p class="l">Available</p><p class="v">0</p><p class="n">reserved by a pending invite</p></div>
+      </div>
+      <div class="actions"><span class="btn btn-gold off">＋ Add Family Member</span><p class="warn-note">No seats available — a pending invitation reserves the seat.</p></div>
+      <div class="rows">
+        <div class="mrow"><span class="av">NA</span><span class="who"><b>Nisreen Abdelkader</b><span>nisreenabdelkader6@gmail.com</span></span><span class="badge navy">Owner · you</span></div>
+        <div class="mrow"><span class="av ghost">✉</span><span class="who"><b>ahmed@example.com</b><span>Invitation sent · not accepted yet</span></span><span class="badge amber">Invitation Pending</span><span style="display:inline-flex;gap:14px;"><span class="lnk">Copy link</span><span class="lnk">Resend</span><span class="lnk red">Cancel</span></span></div>
+      </div>
+    </div>
+    <div class="notes"><p>Dev notes</p><ul>
+      <li>The seat is <b>reserved but not Used</b>: Used stays 1, Available drops to 0 — this is what prevents over-inviting.</li>
+      <li>Actions on a pending row: <code>Copy link</code>, <code>Resend</code>, <code>Cancel</code>. Cancel frees the seat instantly and invalidates the link server-side.</li>
+      <li>Invitation auto-expires after 14 days → moves to the Expired state (State 5) and frees the seat.</li>
+      <li>Only one active invitation per email per subscription.</li>
+      <li><b>Delete-and-resend flow:</b> Cancel frees the seat instantly, so the owner can immediately send a fresh invitation — to the same email or a different one.</li>
+    </ul></div>
+  </div>
+
+  <!-- ══════════ STATE 3 ══════════ -->
+  <div class="state">
+    <div class="state-head"><span class="state-chip">State 3</span><h3 class="state-title">One seat remaining</h3></div>
+    <p class="when">When: part of the family joined and exactly one seat is still free. (3-seat plan example: owner + 1 joined)</p>
+    <div class="mock">
+      <div class="mock-head"><div><p class="eyebrow">Your family plan</p><h3>vault</h3></div><span class="badge green">Active</span></div>
+      <div class="stats">
+        <div class="stat"><p class="l">Seats</p><p class="v">3</p><p class="n">on your family plan</p></div>
+        <div class="stat"><p class="l">Used</p><p class="v">2</p><p class="n">1 owner · 1 joined · 0 pending</p></div>
+        <div class="stat gold"><p class="l">Available</p><p class="v">1</p><p class="n">seat ready to assign</p></div>
+      </div>
+      <div class="actions"><span class="btn btn-gold">＋ Add Family Member</span></div>
+      <div class="rows">
+        <div class="mrow"><span class="av">NA</span><span class="who"><b>Nisreen Abdelkader</b><span>nisreenabdelkader6@gmail.com</span></span><span class="badge navy">Owner · you</span></div>
+        <div class="mrow"><span class="av">NA</span><span class="who"><b>Nisreen Abdelkader</b><span>serax2410@gmail.com</span></span><span class="badge green">Joined</span></div>
+        <div class="mrow"><span class="av slot">·</span><span class="who"><b style="color:var(--muted);font-weight:400;">Empty seat</b><span>Not assigned yet</span></span><span class="badge muted">Available</span></div>
+      </div>
+    </div>
+    <div class="notes"><p>Dev notes</p><ul>
+      <li>Mixed list: Joined members have <b>no owner actions</b> for now — removing a joined member is a pending client decision (see the on-hold row in the validations table).</li>
+      <li>The Available counter stays gold while &gt; 0 to invite action.</li>
+    </ul></div>
+  </div>
+
+  <!-- ══════════ STATE 4 ══════════ -->
+  <div class="state">
+    <div class="state-head"><span class="state-chip">State 4</span><h3 class="state-title">Complete — all seats used</h3></div>
+    <p class="when">When: every seat is taken by an accepted member. (2-seat plan: owner + 1 joined — today’s live data)</p>
+    <div class="mock">
+      <div class="mock-head"><div><p class="eyebrow">Your family plan</p><h3>vault</h3></div><span class="badge green">Active</span></div>
+      <div class="stats">
+        <div class="stat"><p class="l">Seats</p><p class="v">2</p><p class="n">on your family plan</p></div>
+        <div class="stat"><p class="l">Used</p><p class="v">2</p><p class="n">1 owner · 1 joined · 0 pending</p></div>
+        <div class="stat warn"><p class="l">Available</p><p class="v">0</p><p class="n">all seats are used</p></div>
+      </div>
+      <div class="actions"><span class="btn btn-gold off">＋ Add Family Member</span><p class="warn-note">No seats available — all seats on your plan are used.</p></div>
+      <div class="rows">
+        <div class="mrow"><span class="av">NA</span><span class="who"><b>Nisreen Abdelkader</b><span>nisreenabdelkader6@gmail.com</span></span><span class="badge navy">Owner · you</span></div>
+        <div class="mrow"><span class="av">NA</span><span class="who"><b>Nisreen Abdelkader</b><span>serax2410@gmail.com</span></span><span class="badge green">Joined</span></div>
+      </div>
+    </div>
+    <div class="notes"><p>Dev notes</p><ul>
+      <li><b>Add Family Member</b> disabled everywhere (banner + members card) + the amber message. Server must also reject invite attempts (never trust the UI alone).</li>
+      <li>The invite-by-email box is hidden/closed in this state.</li>
+      <li>Optional upsell (needs client approval, out of scope): “Need more seats? Upgrade your family plan”.</li>
+    </ul></div>
+  </div>
+
+  <!-- ══════════ STATE 5 ══════════ -->
+  <div class="state">
+    <div class="state-head"><span class="state-chip">State 5</span><h3 class="state-title">Invitation expired</h3></div>
+    <p class="when">When: an invitation was not accepted within 14 days. The seat is freed automatically.</p>
+    <div class="mock">
+      <div class="mock-head"><div><p class="eyebrow">Your family plan</p><h3>vault</h3></div><span class="badge green">Active</span></div>
+      <div class="stats">
+        <div class="stat"><p class="l">Seats</p><p class="v">2</p><p class="n">on your family plan</p></div>
+        <div class="stat"><p class="l">Used</p><p class="v">1</p><p class="n">1 owner · 0 joined · 0 pending</p></div>
+        <div class="stat gold"><p class="l">Available</p><p class="v">1</p><p class="n">seat ready to assign</p></div>
+      </div>
+      <div class="actions"><span class="btn btn-gold">＋ Add Family Member</span></div>
+      <div class="rows">
+        <div class="mrow"><span class="av">NA</span><span class="who"><b>Nisreen Abdelkader</b><span>nisreenabdelkader6@gmail.com</span></span><span class="badge navy">Owner · you</span></div>
+        <div class="mrow"><span class="av ghost">✉</span><span class="who"><b>ahmed@example.com</b><span>Invite lapsed after 14 days</span></span><span class="badge muted">Expired</span><span style="display:inline-flex;gap:14px;"><span class="lnk">Resend</span><span class="lnk red">Remove</span></span></div>
+      </div>
+    </div>
+    <div class="notes"><p>Dev notes</p><ul>
+      <li>Expired invites do <b>not</b> reserve the seat — Available goes back up.</li>
+      <li>Actions: <code>Resend</code> (creates a fresh invitation → back to State 2) or <code>Remove</code> (clears the row).</li>
+      <li>Opening an expired/cancelled link shows: “This invitation is no longer valid. Ask your family member to send a new one.”</li>
+    </ul></div>
+  </div>
+
+  <!-- ══════════ VALIDATIONS ══════════ -->
+  <h2 class="vtitle">Validations &amp; rules</h2>
+  <p class="lead">Every rule the implementation needs. “Client” = stated in the business requirements; “Recommended” = required for correctness/safety. All checks must exist on the <b>server</b> as well — the UI states above are not the enforcement.</p>
+  <div class="vwrap">
+  <table>
+    <tr><th>#</th><th>Rule</th><th>When checked</th><th>UI behaviour</th><th>Message</th><th>Source</th></tr>
+    <tr><td>1</td><td>Email must be a valid address (trim + lowercase before comparing)</td><td>On Send</td><td>Inline error under the input; invite not sent</td><td class="msg">Enter a valid email address.</td><td><span class="src rec">Recommended</span></td></tr>
+    <tr><td>2</td><td>Owner cannot invite their own email</td><td>On Send</td><td>Inline error</td><td class="msg">That is your own email — you already hold a seat.</td><td><span class="src rec">Recommended</span></td></tr>
+    <tr><td>3</td><td>Only ONE active (pending) invitation per email per subscription</td><td>On Send</td><td>Inline error; point to the existing row</td><td class="msg">An invitation for this email is already pending. Resend or cancel it below.</td><td><span class="src client">Client</span></td></tr>
+    <tr><td>4</td><td>Email already belongs to a joined member of this plan</td><td>On Send</td><td>Inline error</td><td class="msg">This person is already on your plan.</td><td><span class="src rec">Recommended</span></td></tr>
+    <tr><td>5</td><td>Cannot invite beyond available seats — <b>pending invitations reserve their seat</b> (Available = Total − Used − Pending)</td><td>On page render + on Send + server-side</td><td>Add Family Member disabled + amber note (States 2 &amp; 4); server rejects anyway</td><td class="msg">No seats available — all seats on your plan are used.</td><td><span class="src client">Client</span></td></tr>
+    <tr><td>6</td><td>A seat counts as Used only after the invitee accepts AND completes registration</td><td>On acceptance</td><td>Row flips Pending → Joined; counters update automatically</td><td class="msg">—</td><td><span class="src client">Client</span></td></tr>
+    <tr><td>7</td><td>Only the plan owner can invite / resend / cancel / manage seats</td><td>Server-side on every action</td><td>Members see the member view (covered-by-family), never the management UI</td><td class="msg">—</td><td><span class="src client">Client</span></td></tr>
+    <tr><td>8</td><td>Cancelling a pending invitation frees the seat immediately and invalidates the emailed link</td><td>On Cancel</td><td>Row removed; Available +1; confirmation banner</td><td class="msg">Invitation cancelled — the seat is available again.</td><td><span class="src client">Client</span> <span class="src rec">Recommended</span></td></tr>
+    <tr><td>9</td><td>Invitations expire after 14 days and stop reserving the seat</td><td>Background job / on read</td><td>Row shows Expired with Resend / Remove (State 5)</td><td class="msg">—</td><td><span class="src rec">Recommended</span> (current live behaviour)</td></tr>
+    <tr><td>10</td><td>Opening a cancelled / expired / already-used invitation link</td><td>On accept page load</td><td>Friendly error page, no registration form</td><td class="msg">This invitation is no longer valid. Ask your family member to send a new one.</td><td><span class="src rec">Recommended</span></td></tr>
+    <tr><td>11</td><td>Re-validate seat availability at acceptance time (plan changed / seat freed rules may have changed since sending)</td><td>On Accept, server-side</td><td>If invalid → same friendly error as #10</td><td class="msg">—</td><td><span class="src rec">Recommended</span></td></tr>
+    <tr><td>12</td><td>The invitee gets their own private account — the owner never gains access to the member’s will, vault or documents (and vice versa)</td><td>Always</td><td>Privacy note shown on the tab; enforced by authorization</td><td class="msg">You cover billing only.</td><td><span class="src client">Client</span> (privacy model already on the live page)</td></tr>
+    <tr><td>13</td><td>Counters refresh automatically after every change (invite, cancel, expire, accept)</td><td>After each action</td><td>Seats / Used / Available update without a manual reload</td><td class="msg">—</td><td><span class="src client">Client</span></td></tr>
+    <tr><td>14</td><td>Feature visible only to Family Subscription owners — individual-plan users never see the seats banner</td><td>On render</td><td>Tab shows the individual upsell / member view instead</td><td class="msg">—</td><td><span class="src client">Client</span></td></tr>
+    <tr><td>15</td><td>After a cancel or expiry, the same email becomes invitable again (fresh invitation, new link — old links stay dead)</td><td>On Send</td><td>Normal invite flow; duplicate check only blocks ACTIVE pending invites</td><td class="msg">—</td><td><span class="src rec">Recommended</span></td></tr>
+    <tr><td>—</td><td><b>Out of scope for now (client decision pending):</b> removing a JOINED member to free their seat. Until decided, joined members have no owner actions — a seat frees only when a pending invitation is cancelled or expires</td><td>—</td><td>No Remove action on joined rows</td><td class="msg">—</td><td><span class="src rec">On hold</span></td></tr>
+  </table>
+  </div>
+</div>
+</body>
+</html>

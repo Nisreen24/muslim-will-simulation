@@ -1,0 +1,1157 @@
+/* ============================================================================
+   CustomerDashboard v2 — The Muslim Will
+   Faithful port of the React "CustomerDashboard v2" preview to server-rendered
+   CSS. Palette, type scale and motion match the design; layout is responsive
+   (the desktop nav rail collapses to a top header below 960px) instead of the
+   preview's manual MOBILE/DESKTOP toggle.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap');
+
+.cdash {
+    --navy: #0D1B32;
+    --navy-2: #162644;
+    --navy-3: #1A3A6B;
+    --gold: #C8A064;
+    --gold-light: #DDB97A;
+    --gold-dark: #A8844A;
+    --cream: #F7F5F0;
+    --line: #EDEAE3;
+    --ink: #2C2A26;
+    --muted: #6B6760;
+    --amber: #E78A4E;
+    --success: #5B8C6B;
+    --success-light: #8CB59A;
+
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+    font-family: var(--sans);
+    color: var(--ink);
+    background: var(--cream);
+    min-height: 100vh;
+    display: flex;
+    -webkit-font-smoothing: antialiased;
+}
+
+.cdash *,
+.cdash *::before,
+.cdash *::after {
+    box-sizing: border-box;
+}
+
+.cdash button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+/* ── Layout ───────────────────────────────────────────────────────────── */
+.cdash__rail {
+    width: 264px;
+    flex-shrink: 0;
+    background: var(--navy);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding: 22px 16px 16px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.cdash__main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.cdash__topbar {
+    height: 64px;
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--line);
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+}
+
+.cdash__breadcrumb {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    margin: 0;
+}
+
+.cdash__topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.cdash__content {
+    padding: 32px 36px 48px;
+    max-width: 1080px;
+    width: 100%;
+}
+
+/* ── Brand ────────────────────────────────────────────────────────────── */
+.cdash-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 8px 18px;
+}
+
+.cdash-brand__text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+.cdash-brand__name {
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.cdash-brand__sub {
+    font-size: 9px;
+    letter-spacing: 0.04em;
+    color: var(--gold);
+}
+
+/* ── Nav items ────────────────────────────────────────────────────────── */
+.cdash-nav {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.cdash-nav__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.65);
+    text-align: left;
+    transition: background 0.15s ease, color 0.15s ease;
+    text-decoration: none;
+}
+
+.cdash-nav__item:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+}
+
+.cdash-nav__item--active {
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+}
+
+.cdash-nav__item:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.cdash-nav__label {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.cdash-nav__chevron {
+    transition: transform 0.2s ease;
+}
+
+.cdash-nav__item[aria-expanded="true"] .cdash-nav__chevron {
+    transform: rotate(90deg);
+}
+
+.cdash-nav__section-label {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4);
+    margin: 18px 12px 8px;
+}
+
+.cdash-nav__group {
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.cdash-nav__spacer {
+    height: 14px;
+}
+
+/* ── Sub-items ────────────────────────────────────────────────────────── */
+.cdash-subitem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 8px 12px 8px 22px;
+    border-radius: 7px;
+    text-align: left;
+    color: rgba(255, 255, 255, 0.85);
+    transition: background 0.15s ease;
+}
+
+.cdash-subitem:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.cdash-subitem:disabled {
+    cursor: not-allowed;
+}
+
+.cdash-subitem--locked {
+    opacity: 0.5;
+}
+
+.cdash-subitem__label {
+    flex: 1;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.cdash-subitem__badge {
+    font-size: 9.5px;
+    font-weight: 500;
+    padding: 2px 7px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+.cdash-subitem__badge--gold {
+    background: rgba(200, 160, 100, 0.18);
+    color: var(--gold);
+}
+
+.cdash-subitem__badge--amber {
+    background: rgba(231, 138, 78, 0.18);
+    color: var(--amber);
+}
+
+.cdash-subitem__badge--success {
+    background: rgba(91, 140, 107, 0.18);
+    color: var(--success-light);
+}
+
+.cdash-subitem__badge--preview {
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+/* ── Status dot ───────────────────────────────────────────────────────── */
+.cdash-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cdash-dot--complete {
+    background: var(--gold);
+    color: var(--navy);
+}
+
+.cdash-dot--inprogress {
+    border: 2px solid var(--gold);
+    background: rgba(200, 160, 100, 0.25);
+}
+
+.cdash-dot--todo {
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+}
+
+.cdash-dot--locked {
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+}
+
+/* ── User pill ────────────────────────────────────────────────────────── */
+.cdash-userpill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    text-align: left;
+    transition: background 0.15s ease;
+}
+
+.cdash-userpill:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.cdash-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--gold);
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.cdash-userpill__text {
+    flex: 1;
+    min-width: 0;
+}
+
+.cdash-userpill__name {
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cdash-userpill__tier {
+    font-size: 11px;
+    color: var(--gold);
+    margin: 0;
+}
+
+/* ── Top bar bits ─────────────────────────────────────────────────────── */
+.cdash-tour {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--gold-dark);
+}
+
+.cdash-tour:hover {
+    text-decoration: underline;
+}
+
+.cdash-divider {
+    width: 1px;
+    height: 22px;
+    background: var(--line);
+}
+
+.cdash-iconbtn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--line);
+    transition: background 0.15s ease;
+}
+
+.cdash-iconbtn:hover {
+    background: var(--cream);
+}
+
+.cdash-help {
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: var(--navy);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background 0.15s ease;
+}
+
+.cdash-help:hover {
+    background: var(--navy-2);
+}
+
+/* ── Greeting ─────────────────────────────────────────────────────────── */
+.cdash-greeting {
+    margin-bottom: 24px;
+}
+
+.cdash-greeting__eyebrow {
+    font-size: 13px;
+    color: var(--gold-dark);
+    margin: 0 0 2px;
+}
+
+.cdash-greeting__name {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 38px;
+    color: var(--navy);
+    margin: 0;
+    line-height: 1.1;
+}
+
+/* ── Cards (shared) ───────────────────────────────────────────────────── */
+.cdash-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: 0 1px 4px rgba(13, 27, 50, 0.06);
+    margin-bottom: 32px;
+    overflow: hidden;
+}
+
+.cdash-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 8px;
+    font-weight: 500;
+}
+
+.cdash-eyebrow--gold {
+    color: var(--gold-dark);
+}
+
+.cdash-heading {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 28px;
+    color: var(--navy);
+    margin: 0 0 10px;
+    line-height: 1.15;
+}
+
+.cdash-body {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--muted);
+    margin: 0 0 20px;
+}
+
+/* ── Buttons ──────────────────────────────────────────────────────────── */
+.cdash-btn-gold {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 22px;
+    border-radius: 9px;
+    background: var(--gold);
+    color: var(--navy);
+    font-size: 14px;
+    font-weight: 600;
+    transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.cdash-btn-gold:hover {
+    background: var(--gold-light);
+}
+
+.cdash-btn-gold:active {
+    transform: translateY(1px);
+}
+
+.cdash-btn-ghost-dark {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px;
+    border-radius: 9px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.15s ease;
+}
+
+.cdash-btn-ghost-dark:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.cdash-link {
+    color: var(--gold-dark);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.cdash-link:hover {
+    text-decoration: underline;
+}
+
+.cdash-link-dot {
+    color: var(--line);
+}
+
+/* ── Hero: not started (navy) ─────────────────────────────────────────── */
+.cdash-hero-navy {
+    background: var(--navy);
+    border: none;
+    color: #fff;
+}
+
+.cdash-hero-navy__grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+}
+
+.cdash-hero-navy__body {
+    padding: 40px 44px;
+}
+
+.cdash-hero-navy .cdash-heading {
+    color: #fff;
+}
+
+.cdash-hero-navy__tierline {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0 0 18px;
+}
+
+.cdash-hero-navy__eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 8px;
+    font-weight: 500;
+}
+
+.cdash-hero-navy__intro {
+    font-size: 15px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.72);
+    margin: 0 0 28px;
+}
+
+.cdash-hero-navy__actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+
+.cdash-trust {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding-top: 20px;
+    border-top: 1px solid rgba(200, 160, 100, 0.2);
+}
+
+.cdash-trust__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11.5px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.cdash-hero-navy__seal {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--navy-2);
+    text-align: center;
+    padding: 32px;
+}
+
+.cdash-seal-circle {
+    position: relative;
+    display: inline-flex;
+    width: 104px;
+    height: 104px;
+    border-radius: 50%;
+    background: var(--gold);
+    color: var(--navy);
+    align-items: center;
+    justify-content: center;
+}
+
+.cdash-seal__step {
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+    margin: 20px 0 0;
+}
+
+.cdash-seal__title {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 500;
+    color: #fff;
+    margin: 4px 0 0;
+}
+
+.cdash-seal__sub {
+    font-size: 11.5px;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 6px 0 0;
+}
+
+/* ── Hero: standard / progress / review ───────────────────────────────── */
+.cdash-hero-card {
+    padding: 28px 32px;
+}
+
+.cdash-hero-card--accent {
+    border: 1.5px solid var(--gold);
+    box-shadow: 0 4px 16px rgba(200, 160, 100, 0.18), 0 1px 4px rgba(13, 27, 50, 0.06);
+}
+
+.cdash-progress-track {
+    height: 8px;
+    border-radius: 99px;
+    background: var(--line);
+    overflow: hidden;
+    margin: 4px 0 8px;
+}
+
+.cdash-progress-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: var(--gold);
+    transition: width 0.4s ease;
+}
+
+.cdash-progress-label {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin: 0 0 18px;
+}
+
+.cdash-time {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--gold-dark);
+    margin: 0;
+}
+
+.cdash-hijri {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 2px 0 0;
+}
+
+/* ── Review list ──────────────────────────────────────────────────────── */
+.cdash-review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-top: 1px solid var(--line);
+    padding-top: 8px;
+}
+
+.cdash-review-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0;
+}
+
+.cdash-review-row + .cdash-review-row {
+    border-top: 1px solid var(--line);
+}
+
+.cdash-status-bubble {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cdash-status-bubble--complete {
+    background: var(--gold);
+    color: var(--navy);
+}
+
+.cdash-status-bubble--pending {
+    background: var(--cream);
+    border: 1px solid var(--line);
+}
+
+.cdash-review-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--navy);
+    margin: 0;
+}
+
+.cdash-review-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 1px 0 0;
+}
+
+.cdash-review-status {
+    font-size: 12.5px;
+    font-weight: 500;
+}
+
+/* ── Prep tiles / box ─────────────────────────────────────────────────── */
+.cdash-prep-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 22px;
+}
+
+.cdash-prep-tile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 9px;
+    background: var(--cream);
+    border: 1px solid var(--line);
+}
+
+.cdash-prep-tile__icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    background: rgba(200, 160, 100, 0.16);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.cdash-prep-tile__label {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--ink);
+}
+
+.cdash-prep-box {
+    background: var(--cream);
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    padding: 16px 18px;
+    margin-top: 6px;
+}
+
+.cdash-prep-box__label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+    margin: 0 0 10px;
+}
+
+.cdash-prep-box__item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 4px 0;
+}
+
+.cdash-prep-box__text {
+    font-size: 13.5px;
+    color: var(--ink);
+}
+
+/* ── Family invitations ───────────────────────────────────────────────── */
+.cdash-invite {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 32px;
+}
+
+.cdash-invite--deferred {
+    background: linear-gradient(120deg, #fbf7ef, #f6efe1);
+    border: 1px solid rgba(200, 160, 100, 0.4);
+}
+
+.cdash-invite--sent {
+    background: #eef3fb;
+    border: 1px solid rgba(26, 58, 107, 0.18);
+}
+
+.cdash-invite__icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.cdash-invite--deferred .cdash-invite__icon {
+    background: rgba(200, 160, 100, 0.22);
+}
+
+.cdash-invite--sent .cdash-invite__icon {
+    background: rgba(26, 58, 107, 0.12);
+}
+
+.cdash-invite__body {
+    flex: 1;
+}
+
+.cdash-invite__eyebrow {
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin: 0 0 4px;
+}
+
+.cdash-invite--deferred .cdash-invite__eyebrow {
+    color: var(--gold-dark);
+}
+
+.cdash-invite--sent .cdash-invite__eyebrow {
+    color: var(--navy-3);
+}
+
+.cdash-invite__title {
+    font-family: var(--serif);
+    font-size: 19px;
+    font-weight: 500;
+    color: var(--navy);
+    margin: 0 0 4px;
+}
+
+.cdash-invite__text {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0;
+}
+
+.cdash-invite__btn-sent {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 15px;
+    border-radius: 8px;
+    background: #fff;
+    border: 1px solid rgba(26, 58, 107, 0.25);
+    color: var(--navy-3);
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.cdash-invite__btn-sent:hover {
+    background: #f6f9ff;
+}
+
+/* ── Journey preview ──────────────────────────────────────────────────── */
+.cdash-journey {
+    margin-bottom: 32px;
+}
+
+.cdash-journey__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.cdash-journey__title {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--navy);
+    margin: 0;
+}
+
+.cdash-journey__subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0;
+}
+
+.cdash-journey__card {
+    position: relative;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 28px 24px;
+    box-shadow: 0 1px 4px rgba(13, 27, 50, 0.06);
+}
+
+.cdash-journey__connector {
+    position: absolute;
+    top: 56px;
+    left: 12%;
+    right: 12%;
+    height: 1px;
+    background: var(--line);
+}
+
+.cdash-journey__steps {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    position: relative;
+}
+
+.cdash-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.cdash-step__num {
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin: 0 0 10px;
+    color: var(--muted);
+}
+
+.cdash-step--done .cdash-step__num,
+.cdash-step--done .cdash-step__circle {
+    color: var(--gold-dark);
+}
+
+.cdash-step--active .cdash-step__num {
+    color: var(--navy);
+}
+
+.cdash-step__circle {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    background: #fff;
+    border: 1.5px solid var(--line);
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.cdash-step--done .cdash-step__circle {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--navy);
+}
+
+.cdash-step--active .cdash-step__circle {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: #fff;
+}
+
+.cdash-step__label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--navy);
+    margin: 0 0 3px;
+}
+
+.cdash-step__detail {
+    font-size: 11px;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* ── Quick access ─────────────────────────────────────────────────────── */
+.cdash-quick {
+    margin-bottom: 28px;
+}
+
+.cdash-quick__title {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--navy);
+    margin: 0 0 14px;
+}
+
+.cdash-quick__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+}
+
+.cdash-quick-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 18px;
+    border-radius: 13px;
+    background: #fff;
+    border: 1px solid var(--line);
+    text-align: left;
+    width: 100%;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+
+.cdash-quick-card:hover:not(:disabled) {
+    border-color: rgba(200, 160, 100, 0.5);
+    box-shadow: 0 4px 14px rgba(13, 27, 50, 0.07);
+}
+
+.cdash-quick-card:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.cdash-quick-card__icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    background: rgba(200, 160, 100, 0.14);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.cdash-quick-card__title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy);
+    margin: 0 0 3px;
+}
+
+.cdash-quick-card__sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* ── Legal footer ─────────────────────────────────────────────────────── */
+.cdash-legal {
+    font-size: 11.5px;
+    color: var(--muted);
+    line-height: 1.5;
+    margin: 8px 0 0;
+    max-width: 760px;
+}
+
+/* ── Motion ───────────────────────────────────────────────────────────── */
+.cdash-fade {
+    animation: cdashFade 0.45s ease both;
+}
+
+@keyframes cdashFade {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.cdash-pulse-ring {
+    animation: cdashPulse 2s ease-out infinite;
+}
+
+@keyframes cdashPulse {
+    0% { transform: scale(1); opacity: 0.5; }
+    70% { transform: scale(1.6); opacity: 0; }
+    100% { transform: scale(1.6); opacity: 0; }
+}
+
+.cdash-pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--gold-dark);
+    animation: cdashDot 1.4s ease-in-out infinite;
+}
+
+@keyframes cdashDot {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 1; }
+}
+
+/* ── Mobile / responsive ──────────────────────────────────────────────── */
+.cdash__rail-mobilehead {
+    display: none;
+}
+
+@media (max-width: 960px) {
+    .cdash {
+        flex-direction: column;
+    }
+
+    .cdash__rail {
+        position: static;
+        height: auto;
+        width: 100%;
+        padding: 16px;
+    }
+
+    .cdash__content {
+        padding: 22px 18px 40px;
+    }
+
+    .cdash-hero-navy__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cdash-hero-navy__seal {
+        display: none;
+    }
+
+    .cdash-greeting__name {
+        font-size: 30px;
+    }
+
+    .cdash-heading {
+        font-size: 24px;
+    }
+
+    .cdash-journey__steps {
+        display: flex;
+        overflow-x: auto;
+        gap: 6px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .cdash-step {
+        flex-shrink: 0;
+        min-width: 96px;
+    }
+
+    .cdash-journey__connector {
+        display: none;
+    }
+
+    .cdash-invite,
+    .cdash-hero-navy__actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .cdash-btn-gold,
+    .cdash-btn-ghost-dark {
+        justify-content: center;
+    }
+}

@@ -1,0 +1,1591 @@
+/* ============================================================================
+   CustomerDashboard v2 — Patriva
+   Faithful port of the React "CustomerDashboard v2" preview to server-rendered
+   CSS. Palette, type scale and motion match the design; layout is responsive
+   (the desktop nav rail collapses to a top header below 960px) instead of the
+   preview's manual MOBILE/DESKTOP toggle.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Reset the browser's default 8px body margin so the app shell sits flush to the
+   viewport edges. The wizard steps already got this from Bootstrap's Reboot; the
+   dashboard didn't load Bootstrap, which is why it showed a gap at the top/left.
+   Putting it in the shared layout CSS removes the gap consistently on every page. */
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+/* Chrome/Edge paint autofilled fields pale blue (#E8F0FE) with an internal
+   background that plain `background-color` can't override — it clashes with the
+   warm cream palette. The inset box-shadow covers it, and the very long
+   background transition stops the blue flash Chrome shows before styles apply. */
+.cdash input:-webkit-autofill,
+.cdash input:-webkit-autofill:hover,
+.cdash select:-webkit-autofill,
+.cdash textarea:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #fff inset;
+    box-shadow: 0 0 0 1000px #fff inset;
+    -webkit-text-fill-color: #0F172A;
+    caret-color: #0F172A;
+    transition: background-color 999999s ease-out;
+}
+
+/* Keep the navy focus ring visible when an autofilled field is focused
+   (the inset fill and the ring share `box-shadow`, so combine them here). */
+.cdash input:-webkit-autofill:focus,
+.cdash select:-webkit-autofill:focus,
+.cdash textarea:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px #fff inset, 0 0 0 3px rgba(30, 58, 95, .08);
+    box-shadow: 0 0 0 1000px #fff inset, 0 0 0 3px rgba(30, 58, 95, .08);
+    -webkit-text-fill-color: #0F172A;
+    caret-color: #0F172A;
+    transition: background-color 999999s ease-out;
+}
+
+.cdash {
+    --navy: #1E3A5F;
+    --navy-2: #2A4A73;
+    --navy-3: #345C8A;
+    --gold: #2F80ED;
+    --gold-light: #5B9CF5;
+    --gold-dark: #1F63C4;
+    --cream: #F5F7FA;
+    --line: #E2E8F0;
+    --ink: #0F172A;
+    --muted: #64748B;
+    --amber: #E78A4E;
+    --success: #5B8C6B;
+    --success-light: #8CB59A;
+
+    --serif: 'Inter', Georgia, serif;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+    font-family: var(--sans);
+    color: var(--ink);
+    background: var(--cream);
+    min-height: 100vh;
+    display: flex;
+    -webkit-font-smoothing: antialiased;
+}
+
+.cdash *,
+.cdash *::before,
+.cdash *::after {
+    box-sizing: border-box;
+}
+
+.cdash button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+/* The wizard pages' ghost buttons ("Previous section" etc.) declare a
+   transparent background inline per-page, which the cream page background
+   swallows — they don't read as buttons. Scoped to .cdash, this outranks both
+   those per-page rules (0,1,0) and the `.cdash button` reset (0,1,1), and
+   restyles every ghost button to match the header's "Get help" button:
+   white face, navy inset-shadow outline (smoother at rounded corners than a
+   1px border), inverting to solid navy on hover. */
+.cdash .btn-ghost {
+    background: #fff;
+    color: var(--navy);
+    border: none;
+    box-shadow: inset 0 0 0 1px var(--navy);
+    transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+.cdash .btn-ghost:hover:not(:disabled) {
+    background: var(--navy);
+    color: #fff;
+}
+.cdash .btn-ghost:disabled {
+    color: var(--muted);
+    box-shadow: inset 0 0 0 1px var(--line);
+    cursor: default;
+}
+
+/* ── Scrollbars ───────────────────────────────────────────────────────────
+   Replace the browser's default chrome with the brand palette. Light
+   regions (page + cards): a slim dark-navy pill on a cream gutter, easing
+   lighter on hover. The navy rail gets a tone-on-tone navy thumb on a
+   transparent track so the scrollbar reads as part of the sidebar instead
+   of a light strip glued to its edge. The transparent border + background-clip
+   insets each thumb from the gutter walls, which is what makes it feel like
+   an overlay rather than a boxed track. */
+html {
+    scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #F5F7FA; /* --cream */
+}
+
+::-webkit-scrollbar-thumb {
+    background: #16304D; /* dark navy (requested) */
+    border-radius: 999px;
+    border: 3px solid #F5F7FA;
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #345C8A; /* navy, one step lighter */
+}
+
+::-webkit-scrollbar-corner {
+    background: #F5F7FA;
+}
+
+.cdash__rail::-webkit-scrollbar {
+    width: 8px;
+}
+
+.cdash__rail::-webkit-scrollbar-track {
+    background: transparent; /* let the navy show through */
+}
+
+.cdash__rail::-webkit-scrollbar-thumb {
+    background: #345C8A; /* --navy-3 — tone-on-tone with the rail */
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+.cdash__rail::-webkit-scrollbar-thumb:hover {
+    background-color: #27508F; /* --navy-3 lightened one step */
+}
+
+/* Firefox has no ::-webkit-scrollbar; give it the standard properties.
+   Kept out of Chromium via @supports — when scrollbar-color is set,
+   Chromium ignores the richer ::-webkit-scrollbar styling above. */
+@supports not selector(::-webkit-scrollbar) {
+    html {
+        scrollbar-width: thin;
+        scrollbar-color: #16304D #F5F7FA;
+    }
+
+    .cdash__rail {
+        scrollbar-width: thin;
+        scrollbar-color: #345C8A transparent;
+    }
+}
+
+/* ── Layout ───────────────────────────────────────────────────────────── */
+.cdash__rail {
+    width: 264px;
+    flex-shrink: 0;
+    background: var(--navy);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding: 22px 16px 16px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.cdash__main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Legacy views ported from the old public 3/9 grid keep a root
+   `col-12 col-lg-9` wrapper (Will/Index, Step2-4, EditWill, EditProfile…),
+   which pointlessly caps them at 75% width inside this shell — there is no
+   side column here. Stretch them back to full width. */
+.cdash__content > .col-12.col-lg-9 {
+    width: 100%;
+}
+
+.cdash__topbar {
+    height: 64px;
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--line);
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+}
+
+.cdash__breadcrumb {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    margin: 0;
+}
+
+.cdash__topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.cdash__content {
+    padding: 32px 40px 48px;
+    max-width: none;
+    width: 100%;
+}
+
+/* ── Global full-width override for wizard/chapter/review pages ──────────────
+   The Will chapter pages (AboutYou, YourFamily, TrustedPeople, CharitableBequests,
+   Witnesses, Review) each wrap their body in `.mw-content-inner`, which is defined
+   inline per-page with a narrow `max-width` (768–1040px) + `margin: 0 auto`, leaving
+   dead whitespace on BOTH sides. Scoping under `.cdash__content` gives this rule
+   higher specificity (0,2,0) than the per-page inline `.mw-content-inner` (0,1,0),
+   so it wins the cascade regardless of source order — one rule fixes every current
+   and future page using this wrapper, with no per-page edits. */
+.cdash__content .mw-content-inner {
+    max-width: none;
+}
+
+/* ── Brand ────────────────────────────────────────────────────────────── */
+.cdash-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 8px 18px;
+}
+
+.cdash-brand__text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+.cdash-brand__name {
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.cdash-brand__sub {
+    font-size: 9px;
+    letter-spacing: 0.04em;
+    color: var(--gold);
+}
+
+/* ── Nav items ────────────────────────────────────────────────────────── */
+.cdash-nav {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.cdash-nav__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm, 6px);
+    color: rgba(255, 255, 255, 0.65);
+    text-align: left;
+    transition: background 0.15s ease, color 0.15s ease;
+    text-decoration: none;
+}
+
+.cdash-nav__item:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+}
+
+.cdash-nav__item--active {
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+}
+
+.cdash-nav__item:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.cdash-nav__label {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.cdash-nav__chevron {
+    transition: transform 0.2s ease;
+}
+
+.cdash-nav__item[aria-expanded="true"] .cdash-nav__chevron,
+.cdash-subitem[aria-expanded="true"] .cdash-nav__chevron {
+    transform: rotate(90deg);
+}
+
+.cdash-nav__section-label {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4);
+    margin: 18px 12px 8px;
+}
+
+.cdash-nav__group {
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+/* ── Application progress navigator ───────────────────────────────────────
+   The rich wizard "Your application" rail (card timeline) nested under
+   "Set Up My Application" — counter, progress bar, numbered/checked steps,
+   descriptions, estimated times, and active-step highlight. */
+.cdash-appnav {
+    margin: 2px 0 8px 12px;
+    padding-left: 8px;
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.cdash-appnav__meter {
+    padding: 6px 10px 12px;
+}
+
+.cdash-appnav__count {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.55);
+    margin-bottom: 8px;
+}
+
+.cdash-appnav__track {
+    height: 4px;
+    border-radius: var(--radius-pill, 999px);
+    background: rgba(255, 255, 255, 0.12);
+    overflow: hidden;
+}
+
+.cdash-appnav__fill {
+    height: 100%;
+    border-radius: var(--radius-pill, 999px);
+    background: var(--gold);
+    transition: width 0.4s ease;
+}
+
+.cdash-appnav__step {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: var(--radius-sm, 6px);
+    margin-bottom: 2px;
+    text-decoration: none;
+    transition: background 0.15s ease;
+}
+
+.cdash-appnav__step:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.cdash-appnav__step.is-active {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.cdash-appnav__step.is-upcoming {
+    opacity: 0.55;
+}
+
+.cdash-appnav__badge {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: var(--radius-pill, 999px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 500;
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.cdash-appnav__step.is-active .cdash-appnav__badge {
+    background: #fff;
+    border-color: var(--gold);
+    color: var(--navy);
+}
+
+.cdash-appnav__step.is-complete .cdash-appnav__badge {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--navy);
+}
+
+/* Waiting chapter (see .cdash-appnav__wait): same gold circle as a completed
+   step, but carrying an hourglass instead of the check. */
+.cdash-appnav__badge.is-waiting {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--navy);
+}
+
+.cdash-appnav__body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    padding-top: 1px;
+}
+
+.cdash-appnav__title {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+/* "Waiting" pill on a chapter row (Witnesses after submit) — the step is
+   awaiting input, not disabled. Tone classes (.cdash-subitem__badge--*)
+   supply the colors; the clock icon inherits via currentColor. */
+.cdash-appnav__wait {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 9px;
+    font-weight: 500;
+    padding: 1.5px 6px;
+    border-radius: var(--radius-xs, 3px);
+    white-space: nowrap;
+    margin-left: 5px;
+    vertical-align: 1px;
+}
+
+/* Designer rule: a waiting row reads like any normal step — no "upcoming"
+   fade at all; the hourglass circle + pill carry the waiting meaning. */
+.cdash-appnav__step.is-upcoming:has(.cdash-appnav__wait) {
+    opacity: 1;
+}
+
+.cdash-appnav__step.is-active .cdash-appnav__title {
+    color: #fff;
+}
+
+.cdash-appnav__desc {
+    font-size: 10.5px;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.cdash-appnav__time {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 9.5px;
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 1px;
+}
+
+.cdash-nav__spacer {
+    height: 14px;
+}
+
+/* ── Sub-items ────────────────────────────────────────────────────────── */
+.cdash-subitem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 8px 12px 8px 22px;
+    border-radius: var(--radius-sm, 6px);
+    text-align: left;
+    color: rgba(255, 255, 255, 0.85);
+    transition: background 0.15s ease;
+}
+
+.cdash-subitem:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.cdash-subitem:disabled {
+    cursor: not-allowed;
+}
+
+.cdash-subitem--locked {
+    opacity: 0.5;
+}
+
+.cdash-subitem__label {
+    flex: 1;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.cdash-subitem__badge {
+    font-size: 9.5px;
+    font-weight: 500;
+    padding: 2px 7px;
+    border-radius: var(--radius-xs, 3px);
+    white-space: nowrap;
+}
+
+.cdash-subitem__badge--gold {
+    background: rgba(47, 128, 237, 0.18);
+    color: var(--gold);
+}
+
+.cdash-subitem__badge--amber {
+    background: rgba(231, 138, 78, 0.18);
+    color: var(--amber);
+}
+
+.cdash-subitem__badge--success {
+    background: rgba(91, 140, 107, 0.18);
+    color: var(--success-light);
+}
+
+.cdash-subitem__badge--preview {
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+/* ── Status dot ───────────────────────────────────────────────────────── */
+.cdash-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: var(--radius-circle, 50%);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cdash-dot--complete {
+    background: var(--gold);
+    color: var(--navy);
+}
+
+.cdash-dot--inprogress {
+    border: 2px solid var(--gold);
+    background: rgba(47, 128, 237, 0.25);
+}
+
+.cdash-dot--todo {
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+}
+
+.cdash-dot--locked {
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+}
+
+/* ── User pill ────────────────────────────────────────────────────────── */
+.cdash-userpill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px;
+    border-radius: var(--radius-sm, 6px);
+    margin-top: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    text-align: left;
+    transition: background 0.15s ease;
+}
+
+.cdash-userpill:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.cdash-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: var(--radius-circle, 50%);
+    background: var(--gold);
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.cdash-userpill__text {
+    flex: 1;
+    min-width: 0;
+}
+
+.cdash-userpill__name {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cdash-userpill__tier {
+    display: block;
+    font-size: 11px;
+    color: var(--gold);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Keep the dropdown chevron pinned to the right at its natural size — a long
+   name now ellipsizes inside __text instead of shoving the chevron off-edge. */
+.cdash-userpill > svg { flex-shrink: 0; }
+
+/* ── Top bar bits ─────────────────────────────────────────────────────── */
+.cdash-tour {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--gold-dark);
+}
+
+.cdash-tour:hover {
+    text-decoration: underline;
+}
+
+.cdash-divider {
+    width: 1px;
+    height: 22px;
+    background: var(--line);
+}
+
+.cdash-iconbtn {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm, 6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--line);
+    transition: background 0.15s ease;
+}
+
+.cdash-iconbtn:hover {
+    background: var(--cream);
+}
+
+/* ── Header notifications — same card as the admin bell (_AdminLayout mw-notif),
+   rendered by the shared _CustomerNotifications partial ─────────────────────── */
+.cdash-notif { position: relative; }
+
+.cdash-notif__btn { position: relative; }
+
+.cdash-notif__badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: var(--gold);
+    color: var(--navy);
+    font-size: 9.5px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cdash-notif__dd {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 320px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: 0 16px 40px rgba(30, 58, 95, 0.16);
+    overflow: hidden;
+    z-index: 1000;
+}
+
+.cdash-notif__dd[hidden] { display: none; }
+
+.cdash-notif__head {
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--line);
+    font-weight: 600;
+    color: var(--navy);
+    font-size: 13.5px;
+}
+
+.cdash-notif__empty {
+    padding: 14px 16px;
+    color: var(--muted);
+    font-size: 12.5px;
+    margin: 0;
+}
+
+.cdash-notif__item {
+    display: flex;
+    gap: 10px;
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--line);
+    text-decoration: none;
+}
+
+.cdash-notif__item:hover { background: var(--cream); }
+
+.cdash-notif__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--gold-dark);
+    margin-top: 5px;
+    flex-shrink: 0;
+}
+
+.cdash-notif__body {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.cdash-notif__title {
+    color: var(--navy);
+    font-size: 12.5px;
+    font-weight: 500;
+}
+
+.cdash-notif__desc {
+    color: var(--muted);
+    font-size: 11.5px;
+}
+
+.cdash-notif__time {
+    color: #B9B4AA;
+    font-size: 10.5px;
+    margin-top: 1px;
+}
+
+.cdash-notif__foot {
+    display: block;
+    text-align: center;
+    padding: 11px;
+    color: var(--navy);
+    font-size: 12px;
+    background: var(--cream);
+    border-top: 1px solid var(--line);
+    text-decoration: none;
+}
+
+.cdash-notif__foot:hover { color: var(--gold-dark); }
+
+/* Scoped to .cdash so these beat the `.cdash button { background:none; border:none }`
+   reset. Normal = outline (like the "Choose Elite" plan button); hover = solid navy. */
+.cdash .cdash-help {
+    padding: 8px 16px;
+    border-radius: var(--radius-sm, 6px);
+    background: #fff;
+    color: var(--navy);
+    /* Inset shadow instead of a 1px border — renders a smoother outline at the
+       rounded corners (same technique as the "Choose Elite" plan button). */
+    border: none;
+    box-shadow: inset 0 0 0 1px var(--navy);
+    font-size: 13px;
+    font-weight: 500;
+    transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cdash .cdash-help:hover {
+    background: var(--navy);
+    color: #fff;
+    box-shadow: inset 0 0 0 1px var(--navy);
+}
+
+/* ── Greeting ─────────────────────────────────────────────────────────── */
+.cdash-greeting {
+    margin-bottom: 24px;
+}
+
+.cdash-greeting__eyebrow {
+    font-size: 13px;
+    color: var(--gold-dark);
+    margin: 0 0 2px;
+}
+
+.cdash-greeting__name {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 38px;
+    color: var(--navy);
+    margin: 0;
+    line-height: 1.1;
+}
+
+/* ── Cards (shared) ───────────────────────────────────────────────────── */
+.cdash-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg, 12px);
+    box-shadow: 0 1px 4px rgba(30, 58, 95, 0.06);
+    margin-bottom: 32px;
+    overflow: hidden;
+}
+
+.cdash-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 8px;
+    font-weight: 500;
+}
+
+.cdash-eyebrow--gold {
+    color: var(--gold-dark);
+}
+
+.cdash-heading {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 28px;
+    color: var(--navy);
+    margin: 0 0 10px;
+    line-height: 1.15;
+}
+
+.cdash-body {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--muted);
+    margin: 0 0 20px;
+}
+
+/* ── Buttons ──────────────────────────────────────────────────────────── */
+.cdash-btn-gold {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 22px;
+    border-radius: var(--radius-sm, 6px);
+    background: var(--gold);
+    color: var(--navy);
+    font-size: 14px;
+    font-weight: 600;
+    transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.cdash-btn-gold:hover {
+    background: var(--gold-light);
+}
+
+.cdash-btn-gold:active {
+    transform: translateY(1px);
+}
+
+.cdash-btn-ghost-dark {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px;
+    border-radius: var(--radius-sm, 6px);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.15s ease;
+}
+
+.cdash-btn-ghost-dark:hover {
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.cdash-link {
+    color: var(--gold-dark);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.cdash-link:hover {
+    text-decoration: underline;
+}
+
+.cdash-link-dot {
+    color: var(--line);
+}
+
+/* ── Hero: not started (navy) ─────────────────────────────────────────── */
+.cdash-hero-navy {
+    background: var(--navy);
+    border: none;
+    color: #fff;
+}
+
+.cdash-hero-navy__grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+}
+
+.cdash-hero-navy__body {
+    padding: 40px 44px;
+}
+
+.cdash-hero-navy .cdash-heading {
+    color: #fff;
+}
+
+.cdash-hero-navy__tierline {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0 0 18px;
+}
+
+.cdash-hero-navy__eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 8px;
+    font-weight: 500;
+}
+
+.cdash-hero-navy__intro {
+    font-size: 15px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.72);
+    margin: 0 0 28px;
+}
+
+.cdash-hero-navy__actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+
+.cdash-trust {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding-top: 20px;
+    border-top: 1px solid rgba(47, 128, 237, 0.2);
+}
+
+.cdash-trust__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11.5px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.cdash-hero-navy__seal {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--navy-2);
+    text-align: center;
+    padding: 32px;
+}
+
+.cdash-seal-circle {
+    position: relative;
+    display: inline-flex;
+    width: 104px;
+    height: 104px;
+    border-radius: var(--radius-circle, 50%);
+    background: var(--gold);
+    color: var(--navy);
+    align-items: center;
+    justify-content: center;
+}
+
+.cdash-seal__step {
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+    margin: 20px 0 0;
+}
+
+.cdash-seal__title {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 500;
+    color: #fff;
+    margin: 4px 0 0;
+}
+
+.cdash-seal__sub {
+    font-size: 11.5px;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 6px 0 0;
+}
+
+/* ── Hero: standard / progress / review ───────────────────────────────── */
+.cdash-hero-card {
+    padding: 28px 32px;
+}
+
+.cdash-hero-card--accent {
+    border: 1.5px solid var(--gold);
+    box-shadow: 0 4px 16px rgba(47, 128, 237, 0.18), 0 1px 4px rgba(30, 58, 95, 0.06);
+}
+
+.cdash-progress-track {
+    height: 8px;
+    border-radius: var(--radius-pill, 999px);
+    background: var(--line);
+    overflow: hidden;
+    margin: 4px 0 8px;
+}
+
+.cdash-progress-fill {
+    height: 100%;
+    border-radius: var(--radius-pill, 999px);
+    background: var(--gold);
+    transition: width 0.4s ease;
+}
+
+.cdash-progress-label {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin: 0 0 18px;
+}
+
+.cdash-time {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--gold-dark);
+    margin: 0;
+}
+
+.cdash-hijri {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 2px 0 0;
+}
+
+/* ── Review list ──────────────────────────────────────────────────────── */
+.cdash-review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-top: 1px solid var(--line);
+    padding-top: 8px;
+}
+
+.cdash-review-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0;
+}
+
+.cdash-review-row + .cdash-review-row {
+    border-top: 1px solid var(--line);
+}
+
+.cdash-status-bubble {
+    width: 26px;
+    height: 26px;
+    border-radius: var(--radius-circle, 50%);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cdash-status-bubble--complete {
+    background: var(--gold);
+    color: var(--navy);
+}
+
+.cdash-status-bubble--pending {
+    background: var(--cream);
+    border: 1px solid var(--line);
+}
+
+/* In-progress reads as a live step: gold ring + soft gold fill around the
+   pulsing dot, same 26px footprint as the other states. */
+.cdash-status-bubble--in-progress {
+    background: rgba(47, 128, 237, .14);
+    border: 1px solid var(--gold);
+}
+
+.cdash-review-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--navy);
+    margin: 0;
+}
+
+.cdash-review-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 1px 0 0;
+}
+
+.cdash-review-status {
+    font-size: 12.5px;
+    font-weight: 500;
+}
+
+/* ── Prep tiles / box ─────────────────────────────────────────────────── */
+.cdash-prep-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 22px;
+}
+
+.cdash-prep-tile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm, 6px);
+    background: var(--cream);
+    border: 1px solid var(--line);
+}
+
+.cdash-prep-tile__icon {
+    width: 26px;
+    height: 26px;
+    border-radius: var(--radius-sm, 6px);
+    background: rgba(47, 128, 237, 0.16);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.cdash-prep-tile__label {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--ink);
+}
+
+.cdash-prep-box {
+    background: var(--cream);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm, 6px);
+    padding: 16px 18px;
+    margin-top: 6px;
+}
+
+.cdash-prep-box__label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+    margin: 0 0 10px;
+}
+
+.cdash-prep-box__item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 4px 0;
+}
+
+.cdash-prep-box__text {
+    font-size: 13.5px;
+    color: var(--ink);
+}
+
+/* ── Family invitations ───────────────────────────────────────────────── */
+.cdash-invite {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-radius: var(--radius-md, 8px);
+    padding: 20px 24px;
+    margin-bottom: 32px;
+}
+
+.cdash-invite--deferred {
+    background: linear-gradient(120deg, #fbf7ef, #f6efe1);
+    border: 1px solid rgba(47, 128, 237, 0.4);
+}
+
+.cdash-invite--sent {
+    background: #eef3fb;
+    border: 1px solid rgba(26, 58, 107, 0.18);
+}
+
+.cdash-invite__icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-sm, 6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.cdash-invite--deferred .cdash-invite__icon {
+    background: rgba(47, 128, 237, 0.22);
+}
+
+.cdash-invite--sent .cdash-invite__icon {
+    background: rgba(26, 58, 107, 0.12);
+}
+
+.cdash-invite__body {
+    flex: 1;
+}
+
+.cdash-invite__eyebrow {
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin: 0 0 4px;
+}
+
+.cdash-invite--deferred .cdash-invite__eyebrow {
+    color: var(--gold-dark);
+}
+
+.cdash-invite--sent .cdash-invite__eyebrow {
+    color: var(--navy-3);
+}
+
+.cdash-invite__title {
+    font-family: var(--serif);
+    font-size: 19px;
+    font-weight: 500;
+    color: var(--navy);
+    margin: 0 0 4px;
+}
+
+.cdash-invite__text {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0;
+}
+
+.cdash-invite__btn-sent {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 15px;
+    border-radius: var(--radius-sm, 6px);
+    background: #fff;
+    border: 1px solid rgba(26, 58, 107, 0.25);
+    color: var(--navy-3);
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.cdash-invite__btn-sent:hover {
+    background: #f6f9ff;
+}
+
+/* ── Journey preview ──────────────────────────────────────────────────── */
+.cdash-journey {
+    margin-bottom: 32px;
+}
+
+.cdash-journey__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.cdash-journey__title {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--navy);
+    margin: 0;
+}
+
+.cdash-journey__subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0;
+}
+
+.cdash-journey__card {
+    position: relative;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg, 12px);
+    padding: 28px 24px;
+    box-shadow: 0 1px 4px rgba(30, 58, 95, 0.06);
+}
+
+.cdash-journey__connector {
+    position: absolute;
+    /* card padding (28) + step-num line (16) + its margin (10) + half circle (19)
+       = the circles' vertical center; keep in sync with .cdash-step__num/__circle */
+    top: calc(28px + 16px + 10px + 19px);
+    left: 12%;
+    right: 12%;
+    height: 1px;
+    background: var(--line);
+}
+
+.cdash-journey__steps {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    position: relative;
+}
+
+.cdash-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.cdash-step__num {
+    font-size: 10.5px;
+    line-height: 16px; /* fixed so the connector's top calc stays exact */
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin: 0 0 10px;
+    color: var(--muted);
+}
+
+.cdash-step--done .cdash-step__num,
+.cdash-step--done .cdash-step__circle {
+    color: var(--gold-dark);
+}
+
+.cdash-step--active .cdash-step__num {
+    color: var(--navy);
+}
+
+.cdash-step__circle {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-circle, 50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    background: #fff;
+    border: 1.5px solid var(--line);
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.cdash-step--done .cdash-step__circle {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--navy);
+}
+
+.cdash-step--active .cdash-step__circle {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: #fff;
+}
+
+.cdash-step__label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--navy);
+    margin: 0 0 3px;
+}
+
+.cdash-step__detail {
+    font-size: 11px;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* ── Quick access ─────────────────────────────────────────────────────── */
+.cdash-quick {
+    margin-bottom: 28px;
+}
+
+.cdash-quick__title {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--navy);
+    margin: 0 0 14px;
+}
+
+.cdash-quick__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+}
+
+.cdash-quick-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 18px;
+    border-radius: var(--radius-md, 8px);
+    background: #fff;
+    border: 1px solid var(--line);
+    text-align: left;
+    width: 100%;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+
+.cdash-quick-card:hover:not(:disabled) {
+    border-color: rgba(47, 128, 237, 0.5);
+    box-shadow: 0 4px 14px rgba(30, 58, 95, 0.07);
+}
+
+.cdash-quick-card:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.cdash-quick-card__icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm, 6px);
+    background: rgba(47, 128, 237, 0.14);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.cdash-quick-card__title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy);
+    margin: 0 0 3px;
+}
+
+.cdash-quick-card__sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* ── Legal footer ─────────────────────────────────────────────────────── */
+.cdash-legal {
+    font-size: 11.5px;
+    color: var(--muted);
+    line-height: 1.5;
+    margin: 8px 0 0;
+    max-width: 760px;
+}
+
+/* ── Motion ───────────────────────────────────────────────────────────── */
+.cdash-fade {
+    animation: cdashFade 0.45s ease both;
+}
+
+@keyframes cdashFade {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.cdash-pulse-ring {
+    animation: cdashPulse 2s ease-out infinite;
+}
+
+@keyframes cdashPulse {
+    0% { transform: scale(1); opacity: 0.5; }
+    70% { transform: scale(1.6); opacity: 0; }
+    100% { transform: scale(1.6); opacity: 0; }
+}
+
+.cdash-pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: var(--radius-circle, 50%);
+    background: var(--gold-dark);
+    animation: cdashDot 1.4s ease-in-out infinite;
+}
+
+@keyframes cdashDot {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 1; }
+}
+
+/* ── Mobile / responsive ──────────────────────────────────────────────── */
+.cdash__rail-mobilehead {
+    display: none;
+}
+
+@media (max-width: 960px) {
+    .cdash {
+        flex-direction: column;
+    }
+
+    .cdash__rail {
+        position: static;
+        height: auto;
+        width: 100%;
+        padding: 16px;
+    }
+
+    .cdash__content {
+        padding: 22px 18px 40px;
+    }
+
+    .cdash-hero-navy__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cdash-hero-navy__seal {
+        display: none;
+    }
+
+    .cdash-greeting__name {
+        font-size: 30px;
+    }
+
+    .cdash-heading {
+        font-size: 24px;
+    }
+
+    .cdash-journey__steps {
+        display: flex;
+        overflow-x: auto;
+        gap: 6px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .cdash-step {
+        flex-shrink: 0;
+        min-width: 96px;
+    }
+
+    .cdash-journey__connector {
+        display: none;
+    }
+
+    .cdash-invite,
+    .cdash-hero-navy__actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .cdash-btn-gold,
+    .cdash-btn-ghost-dark {
+        justify-content: center;
+    }
+}

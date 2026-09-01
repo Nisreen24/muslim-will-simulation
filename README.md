@@ -16,6 +16,18 @@ node serve.mjs          # serves this folder at http://localhost:3000
 Open <http://localhost:3000>. Live preview (private, shared from its Share menu):
 <https://claude.ai/code/artifact/02d95a5d-43c5-4d8f-9d75-b63d031ab5f8>
 
+## Client requirements preview (hand-off for the dev team)
+
+[`client-requirements-preview/`](client-requirements-preview/) contains click-through HTML previews of the
+two client requirements, built on the **product's real page markup and CSS** (gold build):
+
+- **Requirement 1 — Add Package**: My Vault dashboard strip → Add a package → existing Checkout → Success → My Plan.
+- **Requirement 2 — Family seats**: My Profile → Family Plan (interactive seats + invite flow) and a
+  [seat states & validations reference](client-requirements-preview/preview-family-states.html) for implementation.
+
+Start at [`client-requirements-preview/index.html`](client-requirements-preview/index.html)
+(serve the repo with `node serve.mjs` and open <http://localhost:3000/client-requirements-preview/>).
+
 ## Screens (hash routes)
 
 | Route | Screen |

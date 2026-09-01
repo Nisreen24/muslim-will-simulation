@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preview — Checkout (real Pricing/Checkout page)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="real/css/customer-dashboard-gold.css" rel="stylesheet">
+<style>
+  body{margin:0;font-family:'Inter',sans-serif}
+  .cdash__content{max-width:none}
+  .pv-avatar{width:30px;height:30px;border-radius:50%;background:#C8A064;color:#0D1B32;font-size:11.5px;font-weight:600;display:flex;align-items:center;justify-content:center;letter-spacing:.02em}
+  .pv-user{display:inline-flex;align-items:center;gap:9px;background:#fff;border:1px solid #EDEAE3;border-radius:999px;padding:5px 11px 5px 6px}
+  .pv-bell{position:relative;background:none;border:none;cursor:pointer;padding:6px}
+  .pv-bell .dot{position:absolute;top:0;right:0;min-width:15px;height:15px;border-radius:999px;background:#C8A064;color:#0D1B32;font-size:9px;font-weight:700;line-height:15px;text-align:center;padding:0 3px}
+
+  /* ── Real .mwco styles from Views/Pricing/Checkout.cshtml (gold token values) ── */
+  .mwco{--navy:#0D1B32;--navy-mid:#162644;--gold:#C8A064;--gold-deep:#A8844A;--warm:#F7F5F0;--sand:#EDEAE3;--stone:#D4D0C8;--slate:#6B6760;--ink:#2C2A26;--success-text:#1A5C30;--danger-fill:#FBEEEC;--danger-text:#8A2D24;font-family:'Inter',system-ui,sans-serif;color:var(--ink)}
+  .mwco *,.mwco *::before,.mwco *::after{box-sizing:border-box}
+  .mwco .flow-wrap{max-width:980px;margin:0 auto;padding:8px 0 40px}
+  .mwco .flowbar{display:flex;flex-direction:column;align-items:flex-start;gap:18px;margin-bottom:26px}
+  .mwco .steps{display:flex;align-items:center;gap:10px}
+  .mwco .step{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--slate);font-weight:500}
+  .mwco .step .n{width:22px;height:22px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;font-size:11.5px;background:var(--sand);color:var(--slate);border:1px solid var(--stone)}
+  .mwco .step.on{color:var(--navy)}.mwco .step.on .n{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .mwco .step.done .n{background:rgba(200,160,100,.16);border-color:rgba(168,132,74,.4)}
+  .mwco .step-line{width:34px;height:1px;background:var(--stone)}
+  .mwco .flow-actions{display:flex;align-items:center;gap:12px;width:100%;padding-bottom:18px;border-bottom:1px solid var(--stone)}
+  .mwco .backlink{display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--navy);box-shadow:inset 0 0 0 1px var(--navy);border:none;border-radius:6px;padding:8px 14px;font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;text-decoration:none;transition:background .15s ease,color .15s ease}
+  .mwco .backlink:hover{background:var(--navy);color:#fff}
+  .mwco .checkout{display:grid;grid-template-columns:1.4fr 1fr;gap:24px;align-items:start}
+  @media (max-width:880px){.mwco .checkout{grid-template-columns:1fr}}
+  .mwco .card-pane{background:#fff;border:1px solid var(--stone);border-radius:12px;padding:26px 28px}
+  .mwco .pane-title{font-family:'Inter',Georgia,serif;font-weight:600;color:var(--navy);font-size:21px}
+  .mwco .pane-sub{color:var(--slate);font-size:12.5px;margin:3px 0 18px}
+  .mwco .form-label{display:block;font-size:11.5px;font-weight:500;color:var(--slate);margin:16px 0 6px}
+  .mwco .field{width:100%;border:1px solid var(--stone);background:var(--warm);border-radius:6px;padding:11px 14px;font-size:13.5px;color:var(--ink);outline:none;font-family:inherit}
+  .mwco .field:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,160,100,.15);background:#fff}
+  .mwco .pay-element{border:1px solid var(--stone);border-radius:8px;overflow:hidden;background:#fff}
+  .mwco .pay-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--warm);border-bottom:1px solid var(--stone)}
+  .mwco .pay-head .lh{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--success-text);font-weight:500}
+  .mwco .bm{font-size:11px;font-weight:700;margin-left:7px;letter-spacing:.02em}
+  .mwco .pay-body{padding:14px}
+  .mwco .StripeElement{padding:12px;border:1px solid var(--stone);border-radius:6px;background:var(--warm);color:var(--slate);font-size:13.5px;display:flex;justify-content:space-between;gap:12px}
+  .mwco .secure-badge{display:flex;align-items:center;gap:7px;color:var(--slate);font-size:11.5px;margin-top:14px}
+  .mwco .disclaimer{color:var(--slate);font-size:11px;line-height:1.6;margin-top:14px;max-width:560px}
+  .mwco .summary{background:var(--navy);border-radius:12px;padding:22px 24px;box-shadow:0 18px 50px rgba(13,27,50,.22)}
+  .mwco .summary h4{color:#fff;font-family:'Inter',Georgia,serif;font-weight:600;font-size:20px;margin:0}
+  .mwco .skind{color:var(--gold);font-size:12px;margin:2px 0 16px}
+  .mwco .sline{display:flex;align-items:center;justify-content:space-between;padding:7px 0;color:rgba(255,255,255,.82);font-size:12.5px}
+  .mwco .sline .lab{color:rgba(255,255,255,.62)}
+  .mwco .stotal{display:flex;align-items:baseline;justify-content:space-between;border-top:1px solid rgba(200,160,100,.4);margin-top:10px;padding-top:14px}
+  .mwco .stotal .lab{color:rgba(255,255,255,.7);font-size:12.5px}
+  .mwco .stotal .amt{color:#fff;font-family:'Inter',Georgia,serif;font-weight:600;font-size:26px}
+  .mwco .stotal .amt small{font-size:12px;color:var(--gold);font-family:'Inter',sans-serif}
+  .mwco .terms{display:flex;align-items:flex-start;gap:9px;margin:16px 2px}
+  .mwco .terms input{margin-top:2px;accent-color:var(--gold-deep)}
+  .mwco .terms label{font-size:11.5px;color:var(--slate);line-height:1.5}
+  .mwco .terms a{color:var(--gold-deep)}
+  .mwco .btn-gold{width:100%;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--gold);color:var(--navy);border:none;border-radius:6px;padding:13px 18px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;text-decoration:none;transition:filter .15s}
+  .mwco .btn-gold:hover{filter:brightness(.97)}
+  .mwco .btn-gold.off{opacity:.5;pointer-events:none}
+</style>
+</head>
+<body>
+<div class="cdash">
+    <!-- ══ Sidebar (subscribed vault client) ══ -->
+    <aside class="cdash__rail">
+        <div class="cdash-brand">
+            <img src="real/images/patriva-logo.svg" width="30" height="32" alt="">
+            <div class="cdash-brand__text"><span class="cdash-brand__name">Muslim Will</span><span class="cdash-brand__sub">a product of Patriva</span></div>
+        </div>
+        <nav class="cdash-nav">
+            <a href="#" class="cdash-nav__item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3l9 9M5 10v10a1 1 0 001 1h12a1 1 0 001-1V10M10 21V14h4v7"/></svg><span class="cdash-nav__label" style="color:rgba(255,255,255,0.9)">Dashboard</span></a>
+            <div class="cdash-nav__spacer"></div>
+            <button type="button" class="cdash-nav__item" disabled style="cursor:not-allowed;opacity:0.55"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zM14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg><span class="cdash-nav__label" style="color:rgba(255,255,255,0.5)">My Bridge</span><span class="cdash-nav__chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11h14a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2v-7a2 2 0 012-2zM7 11V7a5 5 0 0110 0v4"/></svg></span></button>
+            <a href="preview-vault-dashboard.html" class="cdash-nav__item cdash-nav__item--active"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#DDB97A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zM12 12a3 3 0 100-6 3 3 0 000 6zM12 12v3M9 18l3-3 3 3"/></svg><span class="cdash-nav__label" style="color:rgba(255,255,255,0.9)">My Vault</span></a>
+            <div class="cdash-nav__group">
+                <a href="#" class="cdash-subitem"><span class="cdash-dot cdash-dot--todo"></span><span class="cdash-subitem__label">Obligations Register</span></a>
+                <a href="#" class="cdash-subitem"><span class="cdash-dot cdash-dot--todo"></span><span class="cdash-subitem__label">Estate Inventory</span></a>
+                <a href="#" class="cdash-subitem"><span class="cdash-dot cdash-dot--todo"></span><span class="cdash-subitem__label">Sealed Disclosures</span></a>
+                <a href="#" class="cdash-subitem"><span class="cdash-dot cdash-dot--todo"></span><span class="cdash-subitem__label">Final Words</span></a>
+            </div>
+        </nav>
+    </aside>
+
+    <main class="cdash__main">
+        <div class="cdash__topbar">
+            <p class="cdash__breadcrumb">Checkout</p>
+            <div class="cdash__topbar-actions">
+                <button type="button" class="pv-bell"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2C2A26" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg><span class="dot">1</span></button>
+                <button type="button" class="cdash-help">Get help</button>
+                <span class="pv-user"><span class="pv-avatar">NA</span><span style="font-size:13.5px;font-weight:500;color:#2C2A26">Nisreen</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B6760" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span>
+            </div>
+        </div>
+
+        <div class="cdash__content">
+        <!-- ══ Real Views/Pricing/Checkout.cshtml markup (sample: The Muslim Will, $149 one-time) ══ -->
+        <div class="mwco">
+            <div class="flow-wrap">
+                <div class="flowbar">
+                    <div class="flow-actions">
+                        <a class="backlink" href="preview-add-package.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Back to plan selection</a>
+                        <a class="backlink" href="preview-add-package.html">Cancel</a>
+                    </div>
+                    <div class="steps">
+                        <span class="step done"><span class="n"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#C8A064" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>Plan</span>
+                        <span class="step-line"></span>
+                        <span class="step on"><span class="n">2</span>Payment</span>
+                        <span class="step-line"></span>
+                        <span class="step"><span class="n">3</span>Done</span>
+                    </div>
+                </div>
+
+                <div class="checkout">
+                    <!-- LEFT — payment pane -->
+                    <div>
+                        <div class="card-pane">
+                            <div class="pane-title">Payment</div>
+                            <p class="pane-sub">Your payment is encrypted and processed securely.</p>
+
+                            <label class="form-label">Cardholder name</label>
+                            <input class="field" placeholder="Name as it appears on card">
+
+                            <label class="form-label">Card details</label>
+                            <div class="pay-element">
+                                <div class="pay-head">
+                                    <span class="lh"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1A5C30" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Secure payment</span>
+                                    <span><span class="bm" style="color:#1A1F71;">VISA</span><span class="bm" style="color:#EB001B;">MC</span><span class="bm" style="color:#006FCF;">AMEX</span></span>
+                                </div>
+                                <div class="pay-body">
+                                    <div class="StripeElement"><span>Card number</span><span>MM / YY&nbsp;&nbsp;CVC&nbsp;&nbsp;ZIP</span></div>
+                                </div>
+                            </div>
+
+                            <div class="secure-badge"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B6760" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Encrypted and processed by a PCI-compliant payment provider (Stripe).</div>
+                        </div>
+                        <p class="disclaimer">The Muslim Will is a limited scope document generation service, not a law firm, and does not provide legal advice.</p>
+                    </div>
+
+                    <!-- RIGHT — summary -->
+                    <div>
+                        <div class="summary">
+                            <h4>The Muslim Will</h4>
+                            <p class="skind">One-time · guided will with review</p>
+                            <div>
+                                <div class="sline"><span class="lab">The Muslim Will</span><span>$149.00</span></div>
+                            </div>
+                            <div class="stotal"><span class="lab">Total due today</span><span class="amt">$149.00<small> CAD</small></span></div>
+                        </div>
+                        <div class="terms">
+                            <input type="checkbox" id="agree">
+                            <label for="agree">I agree to the <a href="#">Terms of Service</a> and understand The Muslim Will is a limited-scope document generation service, not a law firm.</label>
+                        </div>
+                        <a class="btn-gold off" id="payBtn" href="preview-success.html">Pay &amp; Continue
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0D1B32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </main>
+</div>
+<script>
+  // same behaviour as the real page: the terms checkbox gates the pay button
+  document.getElementById('agree').addEventListener('change', function () {
+    document.getElementById('payBtn').classList.toggle('off', !this.checked);
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preview — My Vault + Add Package strip (gold build)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="real/css/customer-dashboard-gold.css" rel="stylesheet">
+<link href="real/css/vault-gold.css" rel="stylesheet">
+<style>
+  body{margin:0;font-family:'Inter',sans-serif}
+  /* the live build lets the content fill the width (no 1080px cap) */
+  .cdash__content{max-width:none}
+  /* the live build layers the gold vault-door artwork on the hero (as in the product screenshots) */
+  .vlt-hero{background:#0D1B32 url('real/images/Vault.jpeg') right center / auto 100% no-repeat;min-height:320px;display:flex;flex-direction:column;justify-content:center}
+  .vlt-hero__grid{grid-template-columns:1fr}
+  .vlt-hero__left{max-width:640px}
+  .pv-avatar{width:30px;height:30px;border-radius:50%;background:#C8A064;color:#0D1B32;font-size:11.5px;font-weight:600;display:flex;align-items:center;justify-content:center;letter-spacing:.02em}
+  .pv-user{display:inline-flex;align-items:center;gap:9px;background:#fff;border:1px solid #EDEAE3;border-radius:999px;padding:5px 11px 5px 6px}
+  .pv-bell{position:relative;background:none;border:none;cursor:pointer;padding:6px}
+  .pv-bell .dot{position:absolute;top:0;right:0;min-width:15px;height:15px;border-radius:999px;background:#C8A064;color:#0D1B32;font-size:9px;font-weight:700;line-height:15px;text-align:center;padding:0 3px}
+</style>
+</head>
+<body>
+<div class="cdash">
+
+    <!-- ══ Sidebar (real CustomerSidebar markup, vault-only client state) ══ -->
+    <aside class="cdash__rail">
+        <div class="cdash-brand">
+            <img src="real/images/patriva-logo.svg" width="30" height="32" alt="">
+            <div class="cdash-brand__text">
+                <span class="cdash-brand__name">Muslim Will</span>
+                <span class="cdash-brand__sub">a product of Patriva</span>
+            </div>
+        </div>
+
+        <nav class="cdash-nav">
+            <a href="#" class="cdash-nav__item">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3l9 9M5 10v10a1 1 0 001 1h12a1 1 0 001-1V10M10 21V14h4v7"/></svg>
+                <span class="cdash-nav__label" style="color:rgba(255,255,255,0.9)">Dashboard</span>
+            </a>
+
+            <div class="cdash-nav__spacer"></div>
+
+            <!-- My Bridge — locked -->
+            <button type="button" class="cdash-nav__item" disabled style="cursor:not-allowed;opacity:0.55" title="Not included in your package">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zM14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+                <span class="cdash-nav__label" style="color:rgba(255,255,255,0.5)">My Bridge</span>
+                <span class="cdash-nav__chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11h14a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2v-7a2 2 0 012-2zM7 11V7a5 5 0 0110 0v4"/></svg></span>
+            </button>
+
+            <!-- My Vault — active -->
+            <a href="#" class="cdash-nav__item cdash-nav__item--active">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#DDB97A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zM12 12a3 3 0 100-6 3 3 0 000 6zM12 12v3M9 18l3-3 3 3"/></svg>
+                <span class="cdash-nav__label" style="color:rgba(255,255,255,0.9)">My Vault</span>
+            </a>
+            <div class="cdash-nav__group">
+                <a href="#" class="cdash-subitem"><span class="cdash-dot cdash-dot--todo"></span><span class="cdash-subitem__label">Obligations Register</span></a>
+                <a href="#" class="cdash-subitem"><span class="cdash-dot cdash-dot--todo"></span><span class="cdash-subitem__label">Estate Inventory</span></a>
+                <a href="#" class="cdash-subitem"><span class="cdash-dot cdash-dot--todo"></span><span class="cdash-subitem__label">Sealed Disclosures</span></a>
+                <a href="#" class="cdash-subitem"><span class="cdash-dot cdash-dot--todo"></span><span class="cdash-subitem__label">Final Words</span></a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- ══ Main ══ -->
+    <main class="cdash__main">
+        <div class="cdash__topbar">
+            <p class="cdash__breadcrumb">My Vault</p>
+            <div class="cdash__topbar-actions">
+                <button type="button" class="pv-bell">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2C2A26" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+                    <span class="dot">1</span>
+                </button>
+                <button type="button" class="cdash-help">Get help</button>
+                <span class="pv-user"><span class="pv-avatar">NA</span><span style="font-size:13.5px;font-weight:500;color:#2C2A26">Nisreen</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B6760" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                </span>
+            </div>
+        </div>
+
+        <div class="cdash__content">
+        <div class="vlt vlt-fade">
+
+            <!-- ── Dominant navy hero (real markup from Views/MyVault/Index.cshtml) ── -->
+            <div class="vlt-hero">
+                <div class="vlt-hero__grid">
+                    <div class="vlt-hero__left">
+                        <p class="vlt-hero__eyebrow">Patriva · Secure Vault</p>
+                        <h1 class="vlt-hero__title">My Vault<br><span class="vlt-hero__title-gold">Everything your family will need.</span></h1>
+                        <p class="vlt-hero__body">
+                            A private, encrypted home for your obligations, assets, confidential records, and personal messages —
+                            organised now, and shared with your executor only when the conditions you define are met.
+                        </p>
+                        <div class="vlt-hero__trust">
+                            <div class="vlt-hero__trust-item">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#DDB97A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4v5c0 4.5-3.5 8.5-8 9-4.5-.5-8-4.5-8-9V7l8-4z"/></svg>
+                                <span class="vlt-hero__trust-text">Encrypted &amp; private</span>
+                            </div>
+                            <div class="vlt-hero__trust-item">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#DDB97A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11h14a1 1 0 011 1v8a1 1 0 01-1 1H5a1 1 0 01-1-1v-8a1 1 0 011-1zM8 11V7a4 4 0 018 0v4"/></svg>
+                                <span class="vlt-hero__trust-text">Preview — activates after attestation</span>
+                            </div>
+                            <div class="vlt-hero__trust-item">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#DDB97A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10zM12 6v6l4 2"/></svg>
+                                <span class="vlt-hero__trust-text">Saved automatically</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── NEW: Your plan / Add Package strip (Views/MyVault/_YourPlanAddPackage.cshtml) ── -->
+            <div style="background:#FFFFFF;border:1px solid var(--gold, #2F80ED);border-radius:var(--radius-md, 8px);padding:16px 20px;margin:0 0 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;box-shadow:0 8px 24px -14px var(--navy-deep, #1E3A5F);">
+                <div style="flex:1;min-width:220px;">
+                    <p style="font-family:'Inter',sans-serif;font-size:10.5px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-deep, #1F63C4);margin:0 0 4px;">Your plan</p>
+                    <p style="font-family:'Inter',sans-serif;font-size:12.5px;color:var(--slate, #64748B);margin:0;line-height:1.5;">Add a package to your current plan — your Vault subscription stays active and nothing is replaced.</p>
+                </div>
+                <a href="preview-add-package.html" style="flex-shrink:0;text-decoration:none;font-family:'Inter',sans-serif;font-size:13.5px;font-weight:500;padding:12px 22px;min-height:44px;border-radius:var(--radius-sm, 6px);display:inline-flex;align-items:center;gap:8px;background:var(--gold-deep, #1F63C4);color:#FFFFFF;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                    Add Package
+                </a>
+            </div>
+
+            <!-- ── Headline metrics (real markup, sample values) ── -->
+            <div class="vlt-metrics">
+                <div class="vlt-metric">
+                    <div class="vlt-metric__head">
+                        <div class="vlt-metric__icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#A8844A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M4 10h16M5 21V10M19 21V10M9 21V10M15 21V10M12 3L4 7v3h16V7l-8-4z"/></svg></div>
+                        <span class="vlt-metric__label">Estate value</span>
+                    </div>
+                    <p class="vlt-metric__value">CAD 0</p>
+                    <p class="vlt-metric__sub">across all assets</p>
+                </div>
+                <div class="vlt-metric">
+                    <div class="vlt-metric__head">
+                        <div class="vlt-metric__icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#A8844A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16M6 20h12M5 8h14M5 8l-2.5 5a3 3 0 005 0L5 8zM19 8l-2.5 5a3 3 0 005 0L19 8z"/></svg></div>
+                        <span class="vlt-metric__label">Obligations</span>
+                    </div>
+                    <p class="vlt-metric__value">CAD 342</p>
+                    <p class="vlt-metric__sub">settled before distribution</p>
+                </div>
+                <div class="vlt-metric">
+                    <div class="vlt-metric__head">
+                        <div class="vlt-metric__icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#A8844A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11h14a1 1 0 011 1v8a1 1 0 01-1 1H5a1 1 0 01-1-1v-8a1 1 0 011-1zM8 11V7a4 4 0 018 0v4"/></svg></div>
+                        <span class="vlt-metric__label">Sealed documents</span>
+                    </div>
+                    <p class="vlt-metric__value">1</p>
+                    <p class="vlt-metric__sub">released on your trigger</p>
+                </div>
+                <div class="vlt-metric">
+                    <div class="vlt-metric__head">
+                        <div class="vlt-metric__icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#A8844A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></div>
+                        <span class="vlt-metric__label">Final messages</span>
+                    </div>
+                    <p class="vlt-metric__value">0</p>
+                    <p class="vlt-metric__sub">video &amp; audio</p>
+                </div>
+            </div>
+
+            <!-- ── Module navigation (real markup, sample metas) ── -->
+            <p class="vlt-section-title">Manage your vault</p>
+            <div class="vlt-navgrid">
+                <a href="#" class="vlt-navcard">
+                    <div class="vlt-navcard__top">
+                        <div class="vlt-navcard__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DDB97A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16M6 20h12M5 8h14M5 8l-2.5 5a3 3 0 005 0L5 8zM19 8l-2.5 5a3 3 0 005 0L19 8z"/></svg></div>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C8A064" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                    </div>
+                    <h3 class="vlt-navcard__title">Obligations Register</h3>
+                    <p class="vlt-navcard__desc">Debts, mahr, zakat, and liabilities to be settled from the estate before distribution.</p>
+                    <div class="vlt-navcard__foot">
+                        <span class="vlt-navcard__metric">2 entries · 1 incomplete</span>
+                        <span class="vlt-navcard__open">Open <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#A8844A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+                    </div>
+                </a>
+                <a href="#" class="vlt-navcard">
+                    <div class="vlt-navcard__top">
+                        <div class="vlt-navcard__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DDB97A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M4 10h16M5 21V10M19 21V10M9 21V10M15 21V10M12 3L4 7v3h16V7l-8-4z"/></svg></div>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C8A064" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                    </div>
+                    <h3 class="vlt-navcard__title">Estate Inventory</h3>
+                    <p class="vlt-navcard__desc">Document and value your assets and holdings across currencies for accurate distribution.</p>
+                    <div class="vlt-navcard__foot">
+                        <span class="vlt-navcard__metric">0 assets · CAD 0</span>
+                        <span class="vlt-navcard__open">Open <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#A8844A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+                    </div>
+                </a>
+                <a href="#" class="vlt-navcard">
+                    <div class="vlt-navcard__top">
+                        <div class="vlt-navcard__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DDB97A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11h14a1 1 0 011 1v8a1 1 0 01-1 1H5a1 1 0 01-1-1v-8a1 1 0 011-1zM8 11V7a4 4 0 018 0v4"/></svg></div>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C8A064" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                    </div>
+                    <h3 class="vlt-navcard__title">Sealed Disclosures</h3>
+                    <p class="vlt-navcard__desc">Documents and messages released to your chosen recipients only when your conditions are met.</p>
+                    <div class="vlt-navcard__foot">
+                        <span class="vlt-navcard__metric">1 sealed records</span>
+                        <span class="vlt-navcard__open">Open <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#A8844A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+                    </div>
+                </a>
+                <a href="#" class="vlt-navcard">
+                    <div class="vlt-navcard__top">
+                        <div class="vlt-navcard__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DDB97A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></div>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C8A064" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                    </div>
+                    <h3 class="vlt-navcard__title">Final Words</h3>
+                    <p class="vlt-navcard__desc">Personal video and audio messages for your loved ones, delivered when the time comes.</p>
+                    <div class="vlt-navcard__foot">
+                        <span class="vlt-navcard__metric">0 messages</span>
+                        <span class="vlt-navcard__open">Open <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#A8844A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+                    </div>
+                </a>
+            </div>
+
+            <p class="vlt-legal">
+                The Muslim Will is a limited scope document generation service. It is not a law firm and does not provide legal advice.
+                Vault entries are records you maintain for your family and executor; they are not a substitute for a properly executed will.
+            </p>
+        </div>
+        </div>
+    </main>
+</div>
+
+</body>
+</html>

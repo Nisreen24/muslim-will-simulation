@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preview — My Profile · My Plan (real Profile page)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="real/css/customer-dashboard-gold.css" rel="stylesheet">
+<style>
+  body{margin:0;font-family:'Inter',sans-serif}
+  .cdash__content{max-width:none}
+  .pv-avatar{width:30px;height:30px;border-radius:50%;background:#C8A064;color:#0D1B32;font-size:11.5px;font-weight:600;display:flex;align-items:center;justify-content:center;letter-spacing:.02em}
+  .pv-user{display:inline-flex;align-items:center;gap:9px;background:#fff;border:1px solid #EDEAE3;border-radius:999px;padding:5px 11px 5px 6px}
+  .pv-bell{position:relative;background:none;border:none;cursor:pointer;padding:6px}
+  .pv-bell .dot{position:absolute;top:0;right:0;min-width:15px;height:15px;border-radius:999px;background:#C8A064;color:#0D1B32;font-size:9px;font-weight:700;line-height:15px;text-align:center;padding:0 3px}
+
+  /* ── Real .mwp styles from Views/Profile/Index.cshtml (gold values) ── */
+  .mwp{--navy:#0D1B32;--gold:#C8A064;--goldDk:#A8844A;--body:#2C2A26;--muted:#6B6760;--border:#EDEAE3;--inset:#F7F5F0;--green:#5B8C6B;--greenBg:rgba(91,140,107,.14);--amber:#E78A4E;--amberBg:rgba(231,138,78,.14);--goldBg:rgba(200,160,100,.14);font-family:'Inter',system-ui,sans-serif;color:var(--body)}
+  .mwp *,.mwp *::before,.mwp *::after{box-sizing:border-box}
+  .mwp .serif{font-family:'Inter',Georgia,serif}
+  .mwp .eyebrow{font-size:11px;font-weight:500;color:var(--goldDk);letter-spacing:.18em;text-transform:uppercase;margin:0}
+  .mwp .phead{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+  .mwp .pavatar{width:52px;height:52px;border-radius:50%;background:var(--gold);color:var(--navy);font-weight:600;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .mwp .pname{font-family:'Inter',serif;font-weight:600;font-size:26px;color:var(--navy);margin:0;line-height:1.05}
+  .mwp .pmail{font-size:13px;color:var(--muted);margin:2px 0 0}
+  .mwp .tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:24px;flex-wrap:wrap}
+  .mwp .tab{background:none;border:none;font-family:inherit;font-size:13.5px;font-weight:500;color:var(--muted);padding:12px 14px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;text-decoration:none;display:inline-block}
+  .mwp .tab:hover{color:var(--navy)}
+  .mwp .tab.is-active{color:var(--navy);border-bottom-color:var(--gold)}
+  .mwp .panel{display:flex;flex-direction:column;gap:20px}
+  .mwp .card{background:#fff;border:1px solid var(--border);border-radius:8px;padding:26px}
+  .mwp .row-s{font-size:12.5px;color:var(--muted);margin:3px 0 0}
+  .mwp .badge{display:inline-flex;align-items:center;gap:5px;font-size:9.5px;font-weight:600;padding:3px 8px;border-radius:3px;letter-spacing:.08em;text-transform:uppercase}
+  .mwp .badge.green{background:var(--greenBg);color:var(--green)}
+  .mwp .badge.gold{background:var(--goldBg);color:var(--goldDk)}
+  .mwp .money-row{display:flex;gap:40px;flex-wrap:wrap}
+  .mwp .money .ml{font-size:10px}
+  .mwp .money .mv{font-family:'Inter',serif;font-weight:500;font-size:30px;color:var(--navy);margin:6px 0 0;line-height:1}
+  .mwp .money.gold .mv{color:var(--goldDk)}
+  .mwp .money .mn{font-size:12px;color:var(--muted);margin:6px 0 0}
+  .mwp .unlocks{display:grid;grid-template-columns:1fr 1fr;gap:10px 24px}
+  @media (max-width:680px){.mwp .unlocks{grid-template-columns:1fr}}
+  .mwp .unlock{display:flex;align-items:center;gap:10px;font-size:13.5px}
+  .mwp .unlock .dot{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .mwp .unlock.on .dot{background:var(--greenBg);color:var(--green)}
+</style>
+</head>
+<body>
+<div class="cdash">
+    <!-- ══ Sidebar (My Bridge now unlocked after the will purchase) ══ -->
+    <aside class="cdash__rail">
+        <div class="cdash-brand">
+            <img src="real/images/patriva-logo.svg" width="30" height="32" alt="">
+            <div class="cdash-brand__text"><span class="cdash-brand__name">Muslim Will</span><span class="cdash-brand__sub">a product of Patriva</span></div>
+        </div>
+        <nav class="cdash-nav">
+            <a href="#" class="cdash-nav__item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3l9 9M5 10v10a1 1 0 001 1h12a1 1 0 001-1V10M10 21V14h4v7"/></svg><span class="cdash-nav__label" style="color:rgba(255,255,255,0.9)">Dashboard</span></a>
+            <div class="cdash-nav__spacer"></div>
+            <a href="#" class="cdash-nav__item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zM14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg><span class="cdash-nav__label" style="color:rgba(255,255,255,0.9)">My Bridge</span><span class="cdash-subitem__badge cdash-subitem__badge--gold">New</span></a>
+            <a href="preview-vault-dashboard.html" class="cdash-nav__item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zM12 12a3 3 0 100-6 3 3 0 000 6zM12 12v3M9 18l3-3 3 3"/></svg><span class="cdash-nav__label" style="color:rgba(255,255,255,0.9)">My Vault</span></a>
+            <div class="cdash-nav__group">
+                <a href="#" class="cdash-subitem"><span class="cdash-dot cdash-dot--todo"></span><span class="cdash-subitem__label">Obligations Register</span></a>
+                <a href="#" class="cdash-subitem"><span class="cdash-dot cdash-dot--todo"></span><span class="cdash-subitem__label">Estate Inventory</span></a>
+                <a href="#" class="cdash-subitem"><span class="cdash-dot cdash-dot--todo"></span><span class="cdash-subitem__label">Sealed Disclosures</span></a>
+                <a href="#" class="cdash-subitem"><span class="cdash-dot cdash-dot--todo"></span><span class="cdash-subitem__label">Final Words</span></a>
+            </div>
+        </nav>
+    </aside>
+
+    <main class="cdash__main">
+        <div class="cdash__topbar">
+            <p class="cdash__breadcrumb">My Profile</p>
+            <div class="cdash__topbar-actions">
+                <button type="button" class="pv-bell"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2C2A26" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg><span class="dot">1</span></button>
+                <button type="button" class="cdash-help">Get help</button>
+                <span class="pv-user"><span class="pv-avatar">NA</span><span style="font-size:13.5px;font-weight:500;color:#2C2A26">Nisreen</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B6760" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span>
+            </div>
+        </div>
+
+        <div class="cdash__content">
+        <!-- ══ Real Views/Profile/Index.cshtml markup — "My Plan" tab, after adding the will package ══ -->
+        <div class="mwp">
+            <div class="phead">
+                <span class="pavatar">NA</span>
+                <div>
+                    <p class="pname">Nisreen A.</p>
+                    <p class="pmail">nisreen@example.com</p>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <a class="tab" href="#">Personal</a>
+                <a class="tab" href="#">Security</a>
+                <a class="tab is-active" href="#">My Plan</a>
+                <a class="tab" href="#">Billing &amp; Payments</a>
+                <a class="tab" href="preview-profile-family.html">Family Plan</a>
+            </div>
+
+            <div class="panel">
+                <div class="card" style="padding:0; overflow:hidden;">
+                    <div style="background:var(--navy); padding:26px 28px; display:flex; justify-content:space-between; align-items:flex-start; gap:16px;">
+                        <div>
+                            <p class="eyebrow" style="color:var(--gold);">Your plan</p>
+                            <h3 class="serif" style="font-weight:500; font-size:30px; color:#fff; margin:8px 0 0;">My Vault + The Muslim Will</h3>
+                            <p style="font-size:13px; color:rgba(255,255,255,.6); margin:8px 0 0;">Active since 1 September 2026</p>
+                        </div>
+                        <span class="badge green">Active</span>
+                    </div>
+                    <div style="padding:24px 28px;">
+                        <div class="money-row" style="margin-bottom:22px;">
+                            <div class="money"><p class="eyebrow ml" style="color:var(--muted);">One-time setup</p><p class="mv">$149.00</p><p class="mn">The Muslim Will · paid 1 Sep 2026</p></div>
+                            <div class="money gold"><p class="eyebrow ml">Monthly</p><p class="mv">$5.99</p><p class="mn">My Vault · renews Sep 30, 2026</p></div>
+                        </div>
+                        <p class="eyebrow" style="margin-bottom:12px; color:var(--muted);">What your plan unlocks</p>
+                        <div class="unlocks">
+                            <div class="unlock on"><span class="dot"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span><span>The Muslim Will — guided will &amp; review</span><span class="badge gold" style="margin-left:6px;">New</span></div>
+                            <div class="unlock on"><span class="dot"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span><span>Obligations Register</span></div>
+                            <div class="unlock on"><span class="dot"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span><span>Estate Inventory</span></div>
+                            <div class="unlock on"><span class="dot"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span><span>Sealed Disclosures</span></div>
+                            <div class="unlock on"><span class="dot"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span><span>Final Words</span></div>
+                        </div>
+                    </div>
+                    <div style="border-top:1px solid var(--border); padding:16px 28px; background:var(--inset);">
+                        <p class="row-s" style="margin:0;">Added packages never replace your subscription — <strong style="color:var(--navy);">My Vault stays active</strong> alongside The Muslim Will.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

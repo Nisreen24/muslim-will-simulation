@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preview — Admin · Assign Package (Family seats)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#f8fafc;font-family:'Inter',system-ui,sans-serif;color:#111827}
+  .shell{max-width:1000px;margin:0 auto;padding:34px 24px 80px}
+  .crumb{font-size:12px;color:#6B7280;margin:0 0 4px}
+  h1{font-size:22px;font-weight:600;color:#111827;margin:0}
+  .sub{font-size:13px;color:#6B7280;margin:4px 0 24px}
+  .client-chip{display:inline-flex;align-items:center;gap:10px;background:#fff;border:1px solid #E5E7EB;border-radius:10px;padding:10px 16px;margin:0 0 24px}
+  .client-chip .av{width:34px;height:34px;border-radius:50%;background:#0D1B32;color:#C8A064;font-weight:600;font-size:12px;display:flex;align-items:center;justify-content:center}
+  .client-chip b{display:block;font-size:13.5px;color:#111827}
+  .client-chip span{display:block;font-size:12px;color:#6B7280}
+
+  /* the real toggle card (Views/Clients/EditClientHeader.cshtml) */
+  .admin-card{background:#fff;border:1px solid #E5E7EB;border-radius:12px;padding:22px 24px;margin-bottom:26px}
+  .admin-card h6{font-size:14px;font-weight:600;margin:0 0 2px}
+  .admin-card .muted{font-size:12.5px;color:#6B7280;margin:0}
+  .toggle-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+  .switch{width:48px;height:24px;border-radius:999px;background:#2F80ED;position:relative;flex-shrink:0;cursor:pointer}
+  .switch::after{content:'';position:absolute;top:2px;right:2px;width:20px;height:20px;border-radius:50%;background:#fff}
+
+  /* ── Real popup styles from EditClientHeader.cshtml (copied verbatim, radii resolved) ── */
+  .modal-mock{max-width:520px;margin:0 auto}
+  .package-choice-modal__content{border:none;border-radius:8px;background:#fff;box-shadow:0 24px 60px -20px rgba(17,24,39,.35)}
+  .modal-header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid #f3f4f6}
+  .modal-title{font-size:15.5px;font-weight:600;margin:0}
+  .btn-close{background:none;border:none;font-size:16px;color:#9CA3AF;cursor:pointer}
+  .modal-body{padding:18px 20px}
+  .package-choice-modal__note{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;margin-bottom:16px;border:1px solid #FDE68A;border-radius:6px;background:#FFFBEB;color:#92400E;font-size:13px;line-height:19px}
+  .package-choice-group + .package-choice-group{margin-top:18px}
+  .package-choice-group__title{color:#9CA3AF;font-size:11px;font-weight:600;letter-spacing:.77px;text-transform:uppercase;margin-bottom:10px}
+  .package-choice-option{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border:1px solid #E5E7EB;border-radius:8px;background:#fff;cursor:pointer;transition:all .15s;margin:0}
+  .package-choice-option + .package-choice-option{margin-top:10px}
+  .package-choice-option:hover{border-color:#2F80ED}
+  .package-choice-option.is-selected{border-color:#2F80ED;background:rgba(47,128,237,.07);box-shadow:0 0 0 3px rgba(47,128,237,.15)}
+  .package-choice-option input[type="radio"]{margin-top:3px;accent-color:#2F80ED;flex-shrink:0}
+  .package-choice-option__name{color:#111827;font-size:14px;font-weight:600;margin:0}
+  .package-choice-option__price{color:#1F63C4;font-size:13px;font-weight:600;margin:2px 0 0}
+  .package-choice-option__desc{color:#6B7280;font-size:12px;line-height:18px;margin:4px 0 0}
+  .package-choice-option__current{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:999px;background:#ECFDF3;border:1px solid #ABEFC6;color:#067647;font-size:11px}
+  .modal-footer{display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid #f3f4f6}
+  .btn{font-family:inherit;font-size:13px;font-weight:500;padding:9px 16px;border-radius:6px;cursor:pointer;border:1px solid transparent}
+  .btn-cancel{background:#fff;color:#374151;border-color:#E5E7EB}
+  .btn-save{background:#1F63C4;color:#fff}
+  .btn-save:disabled{opacity:.5;cursor:not-allowed}
+
+  /* ── THE ADDITION: family seat-count step (appears when a family package is selected) ── */
+  .family-badge{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:999px;background:#EFF6FF;border:1px solid #BFDBFE;color:#1D4ED8;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+  .seats-step{margin:10px 0 0 26px;padding:12px 14px;border:1px dashed #BFDBFE;border-radius:8px;background:#F8FAFF}
+  .seats-step .lbl{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#1D4ED8;margin:0 0 8px}
+  .stepper{display:inline-flex;align-items:center;gap:0;border:1px solid #D1D5DB;border-radius:6px;overflow:hidden;background:#fff}
+  .stepper button{width:36px;height:36px;border:none;background:#fff;font-size:17px;color:#374151;cursor:pointer}
+  .stepper button:disabled{color:#D1D5DB;cursor:not-allowed}
+  .stepper .val{width:44px;text-align:center;font-size:14px;font-weight:600;border-left:1px solid #E5E7EB;border-right:1px solid #E5E7EB;line-height:36px}
+  .seats-step .hint{font-size:12px;color:#6B7280;margin:8px 0 0;line-height:1.55}
+  .seats-step .total{font-size:12.5px;font-weight:600;color:#111827;margin:8px 0 0}
+
+  /* success panel (mirrors the Swal + what-happens-next) */
+  .success-panel{display:none;max-width:520px;margin:22px auto 0;background:#fff;border:1px solid #ABEFC6;border-radius:12px;padding:22px 24px}
+  .success-panel.show{display:block}
+  .success-panel .tick{width:44px;height:44px;border-radius:50%;background:#ECFDF3;border:1px solid #ABEFC6;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+  .success-panel h3{font-size:16px;font-weight:600;text-align:center;margin:0 0 4px}
+  .success-panel .m{font-size:12.5px;color:#374151;text-align:center;margin:0 0 16px;line-height:1.6}
+  .success-panel .nxt{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#067647;margin:0 0 8px}
+  .success-panel ol{margin:0;padding-left:20px}
+  .success-panel li{font-size:12.5px;line-height:1.8;color:#111827}
+  .success-panel a{color:#1F63C4;font-weight:600}
+
+  .dev-note{max-width:1000px;margin:34px auto 0;background:#fff;border:1px dashed #E5E7EB;border-radius:10px;padding:16px 20px;font-size:12.5px;color:#6B7280;line-height:1.7}
+  .dev-note b{color:#111827}
+  .dev-note code{background:#F3F4F6;border:1px solid #E5E7EB;border-radius:4px;padding:1px 6px;font-size:11.5px;color:#0D1B32}
+  .back{display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-size:13px;font-weight:500;color:#6B7280;margin-bottom:14px}
+</style>
+</head>
+<body>
+<div class="shell">
+  <a class="back" href="index.html">← Back to the preview index</a>
+  <p class="crumb">Admin → Clients → Client Profile → Edit Client Header</p>
+  <h1>Assign a package to a client <span style="font-weight:400;color:#6B7280;">(admin side)</span></h1>
+  <p class="sub">The real scenario: the admin adds the Family Package for a customer, so they can log in and invite their family — no card payment involved.</p>
+
+  <div class="client-chip"><span class="av">HR</span><span><b>Hazem Raafat</b><span>hazemraafat@gmail.com · added manually to production</span></span></div>
+
+  <!-- Real toggle (Bypass Plan Choice Screen) that opens the package popup -->
+  <div class="admin-card">
+    <div class="toggle-row">
+      <div><h6>Bypass Plan Choice Screen</h6><p class="muted">Skip package selection for this customer</p></div>
+      <span class="switch" title="Turning this on opens the package popup below"></span>
+    </div>
+  </div>
+
+  <!-- ══ The real "Choose a Package" popup, with the NEW family seat step ══ -->
+  <div class="modal-mock" id="pkgModal">
+    <div class="package-choice-modal__content">
+      <div class="modal-header"><h5 class="modal-title">Choose a Package</h5><button type="button" class="btn-close">✕</button></div>
+      <div class="modal-body">
+        <div class="package-choice-modal__note">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;margin-top:1px;"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="#D97706" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>No card payment is required — the payment is recorded as <strong>collected manually</strong>, and the client's privileges open immediately based on the package you choose.</span>
+        </div>
+
+        <div class="package-choice-group">
+          <div class="package-choice-group__title">Will Packages</div>
+          <label class="package-choice-option">
+            <input type="radio" name="manualPackageChoice" value="will">
+            <div>
+              <p class="package-choice-option__name">The Muslim Will</p>
+              <p class="package-choice-option__price">$149.00 one-time — paid manually</p>
+              <p class="package-choice-option__desc">Guided will with specialist and conformity review.</p>
+            </div>
+          </label>
+        </div>
+
+        <div class="package-choice-group">
+          <div class="package-choice-group__title">Vault Packages</div>
+          <label class="package-choice-option">
+            <input type="radio" name="manualPackageChoice" value="vault">
+            <div>
+              <p class="package-choice-option__name">vault</p>
+              <p class="package-choice-option__price">$5.99 / month — paid manually</p>
+              <p class="package-choice-option__desc">Ongoing secure storage and estate organization.</p>
+            </div>
+          </label>
+          <label class="package-choice-option" id="famOption">
+            <input type="radio" name="manualPackageChoice" value="family">
+            <div style="flex:1;">
+              <p class="package-choice-option__name">Family Plan<span class="family-badge">Family</span></p>
+              <p class="package-choice-option__price">$4.99 / member / month — paid manually</p>
+              <p class="package-choice-option__desc">Covers multiple family members — each keeps their own private account.</p>
+
+              <!-- ── NEW (the addition): seat count for family packages ── -->
+              <div class="seats-step" id="seatsStep" style="display:none;">
+                <p class="lbl">Family seats</p>
+                <span class="stepper">
+                  <button type="button" id="seatMinus" disabled>−</button>
+                  <span class="val" id="seatVal">2</span>
+                  <button type="button" id="seatPlus">＋</button>
+                </span>
+                <p class="total" id="seatTotalLine">2 seats × $4.99 = <span style="color:#1F63C4;">$9.98 / month</span> (recorded as a manual payment)</p>
+                <p class="hint">The owner takes seat 1. On save, the family plan is created with this seat count, so the client can invite family members from <b>My Profile → Family Plan</b> right away. Minimum 2 seats.</p>
+              </div>
+            </div>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-cancel">Cancel</button>
+        <button type="button" class="btn btn-save" id="assignBtn" disabled>Assign Package</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- success (mirrors the real Swal confirmation + what happens next) -->
+  <div class="success-panel" id="successPanel">
+    <div class="tick"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#067647" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div>
+    <h3>Package Assigned</h3>
+    <p class="m" id="successMsg">"Family Plan" assigned with 2 seats. Payment recorded as manual and privileges are now open.</p>
+    <p class="nxt">What happens next for hazemraafat@gmail.com</p>
+    <ol>
+      <li>He logs in — the plan-choice screen is bypassed, his Vault is open.</li>
+      <li>In <a href="preview-profile-family.html">My Profile → Family Plan</a> he sees <b>2 Seats · 1 Used · 1 Available</b>.</li>
+      <li>He presses <b>Add Family Member</b> and enters his wife's email — she gets the invitation.</li>
+      <li>She accepts and registers her own private account → <b>2 Used · 0 Available</b>.</li>
+    </ol>
+  </div>
+
+  <div class="dev-note">
+    <b>Dev notes — what exists vs. what this adds:</b><br>
+    • Branch <code>feature/vault-add-package</code> (from <code>Patriva</code>) already has the admin path: <code>Clients/GetAssignablePackages</code> + <code>Clients/AssignPackageManually</code>, opened from the <i>Bypass Plan Choice Screen</i> toggle on Edit Client Header. It links the package, records a Completed manual <code>PaymentStrip</code>, and sets the bypass flag.<br>
+    • <b>Addition 1:</b> when the selected package has <code>packageType == "family"</code>, show this seat-count step (min 2, default 2).<br>
+    • <b>Addition 2:</b> in <code>AssignPackageManually</code>, after assigning a family package call <code>_familyService.EnsureFamilyForOwnerAsync(clientId, seats, packageId)</code> — exactly what the purchase flow does (<code>PricingController.ProcessCheckout</code>, family branch). Without it no <code>FamilyPlan</code> row exists and the client cannot invite anyone.<br>
+    • <b>Production note:</b> the currently deployed build has none of this admin path — the answer to “can we do this from the current system?” is <b>no</b>; it ships with this branch.
+  </div>
+</div>
+
+<script>
+  var radios = document.querySelectorAll('input[name="manualPackageChoice"]');
+  var seats = 2, PRICE = 4.99;
+  function fmt(n){ return '$' + n.toFixed(2); }
+  function syncSeats(){
+    document.getElementById('seatVal').textContent = seats;
+    document.getElementById('seatMinus').disabled = seats <= 2;
+    document.getElementById('seatTotalLine').innerHTML = seats + ' seats × ' + fmt(PRICE) + ' = <span style="color:#1F63C4;">' + fmt(seats * PRICE) + ' / month</span> (recorded as a manual payment)';
+  }
+  function highlight(){
+    radios.forEach(function(r){ r.closest('.package-choice-option').classList.toggle('is-selected', r.checked); });
+    var fam = document.querySelector('input[value="family"]').checked;
+    document.getElementById('seatsStep').style.display = fam ? 'block' : 'none';
+    document.getElementById('assignBtn').disabled = !Array.prototype.some.call(radios, function(r){ return r.checked; });
+  }
+  radios.forEach(function(r){ r.addEventListener('change', highlight); });
+  document.getElementById('seatPlus').addEventListener('click', function(e){ e.preventDefault(); seats++; syncSeats(); });
+  document.getElementById('seatMinus').addEventListener('click', function(e){ e.preventDefault(); if (seats > 2) { seats--; syncSeats(); } });
+  document.getElementById('assignBtn').addEventListener('click', function(){
+    var sel = document.querySelector('input[name="manualPackageChoice"]:checked');
+    var fam = sel && sel.value === 'family';
+    var name = fam ? 'Family Plan' : (sel.value === 'vault' ? 'vault' : 'The Muslim Will');
+    document.getElementById('successMsg').textContent = fam
+      ? '"' + name + '" assigned with ' + seats + ' seats. Payment recorded as manual and privileges are now open.'
+      : '"' + name + '" assigned. Payment recorded as manual and privileges are now open.';
+    var p = document.getElementById('successPanel');
+    p.classList.add('show');
+    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+  syncSeats();
+</script>
+</body>
+</html>

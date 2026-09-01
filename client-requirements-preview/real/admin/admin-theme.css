@@ -1,0 +1,1353 @@
+/* ════════════════════════════════════════════════════════════════════════
+   THE MUSLIM WILL — Admin theme override (Patriva Navy system)
+
+   Layered AFTER Adminstyle.css. Re-skins the existing admin shell + dashboard
+   markup without touching the underlying structure.
+
+   SYSTEM RULES
+     Navy  = structure        Gold = single action color
+     Green = success only      Amber = caution        Clay = overdue/stuck
+     Inter (display) + Inter (body)
+   ════════════════════════════════════════════════════════════════════════ */
+
+:root {
+    /* Navy — structure */
+    --mw-navy:        #1E3A5F;
+    --mw-navy-light:  #2a3d63;
+    --mw-navy-deep:   #14213a;
+    --mw-navy-line:   #2e4368;
+
+    /* Gold — single action color */
+    --mw-gold:        #2F80ED;
+    --mw-gold-light:  #dcc08a;
+    --mw-gold-deep:   #1F63C4;
+    --mw-gold-fill:   rgba(47, 128, 237, 0.16);
+
+    /* Neutrals — warm paper */
+    --mw-warm:  #F5F7FA;   /* page background */
+    --mw-sand:  #EDF1F7;   /* subtle fills */
+    --mw-stone: #E2E8F0;   /* borders */
+    --mw-ink:   #2b3242;   /* primary text */
+    --mw-slate: #6b7385;   /* muted text */
+
+    /* Status */
+    --mw-success-fill: #e7f3ec;  --mw-success-text: #1e6b3a;  --mw-success-line: #bfe0cc;
+    --mw-amber-fill:   #fbf1dd;  --mw-amber-text:   #7a4a00;  --mw-amber-line:   #ecd7a6;
+    --mw-danger-fill:  #fbece9;  --mw-danger-text:  #8a2d24;  --mw-danger-line:  #f0cabf;
+    --mw-info-fill:    #e8eef7;  --mw-info-text:    #2a3d63;  --mw-info-line:    #c5d3e8;
+}
+
+/* ── Typography ──────────────────────────────────────────────────────────── */
+.admin-dashboard {
+    font-family: 'Inter', 'Inter', sans-serif;
+    background-color: var(--mw-warm);
+    color: var(--mw-ink);
+}
+
+.admin-dashboard .admin-dashboard-title,
+.admin-dashboard .admin-statistics-value,
+.admin-dashboard .admin-urgent-title,
+.admin-dashboard .admin-notifications-title,
+.admin-dashboard .admin-quick-actions-title,
+.admin-dashboard .admin-profile-name,
+.admin-dashboard .admin-info-title,
+.admin-dashboard .admin-will-title,
+.admin-dashboard .admin-subscription-title,
+.admin-dashboard .admin-donation-section-title {
+    font-family: 'Inter', Georgia, serif !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.005em;
+    color: var(--mw-navy) !important;
+}
+
+.admin-dashboard .admin-dashboard-title { font-size: 24px !important; line-height: 1.15 !important; }
+.admin-dashboard .admin-statistics-value { font-size: 34px !important; line-height: 1.05 !important; }
+
+/* ── Page surface ────────────────────────────────────────────────────────── */
+.admin-dashboard .col-12.col-lg-10,
+.admin-dashboard .admin-user-page,
+.admin-dashboard .admin-main-page,
+.admin-dashboard .admin-dashboard-layout {
+    background-color: var(--mw-warm);
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   SIDEBAR — navy structure
+   ════════════════════════════════════════════════════════════════════════ */
+.admin-dashboard .admin-sidebar { background-color: var(--mw-navy); }
+
+.admin-dashboard .admin-sidebar-navigation { background-color: var(--mw-navy); }
+
+.admin-dashboard .admin-sidebar-body {
+    background-color: var(--mw-navy);
+    box-shadow: inset -1px 0 0 var(--mw-navy-line);
+}
+
+.admin-dashboard .admin-sidebar-logo {
+    border-bottom: 1px solid var(--mw-navy-line);
+}
+
+.admin-dashboard .admin-sidebar-link {
+    color: #c5cee0;
+    border-radius: var(--radius-sm, 6px);
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.admin-dashboard .admin-sidebar-link:hover {
+    background-color: var(--mw-navy-light);
+    color: #ffffff;
+}
+
+/* Default-state icons: soft slate-blue */
+.admin-dashboard .admin-sidebar-link .side-icon-svg svg path,
+.admin-dashboard .admin-sidebar-link .side-icon-svg svg rect,
+.admin-dashboard .admin-sidebar-link .side-icon-svg svg circle {
+    stroke: #97a3bd;
+}
+.admin-dashboard .admin-sidebar-link .side-icon-svg svg path[fill]:not([fill="none"]) {
+    fill: #97a3bd;
+    stroke: none;
+}
+
+/* Active nav item: GOLD — the single action color */
+.admin-dashboard .admin-sidebar-link.active {
+    background: var(--mw-gold);
+    color: var(--mw-navy-deep);
+    font-weight: 600;
+}
+
+/* Active icons rendered in navy on the gold pill (beats inline !important rules) */
+.admin-sidebar .admin-sidebar-link.active .side-icon-svg svg path[stroke],
+.admin-sidebar .admin-sidebar-link.active .side-icon-svg svg line,
+.admin-sidebar .admin-sidebar-link.active .side-icon-svg svg polyline,
+.admin-sidebar .admin-sidebar-link.active .side-icon-svg svg rect[stroke],
+.admin-sidebar .admin-sidebar-link.active .side-icon-svg svg circle[stroke] {
+    stroke: var(--mw-navy-deep) !important;
+    fill: none !important;
+}
+.admin-sidebar .admin-sidebar-link.active .side-icon-svg svg path[fill]:not([fill="none"]) {
+    fill: var(--mw-navy-deep) !important;
+    stroke: none !important;
+}
+
+/* Sub-menu (Packages) on navy */
+.admin-dashboard .admin-sidebar-sublink { color: #aab4cb !important; }
+.admin-dashboard .admin-sidebar-sublink:hover {
+    color: #ffffff !important;
+    background: var(--mw-navy-light) !important;
+}
+.admin-dashboard .admin-sidebar-sublink.active {
+    color: var(--mw-navy-deep) !important;
+    background: var(--mw-gold-light) !important;
+    font-weight: 600;
+}
+
+/* Mobile sidebar mirrors the desktop navy treatment */
+.admin-sidebar-mobile .admin-sidebar-body { background-color: var(--mw-navy); }
+.admin-sidebar-mobile .admin-sidebar-link.active { background: var(--mw-gold); color: var(--mw-navy-deep); }
+.admin-sidebar-mobile .admin-sidebar-link.active .side-icon-svg svg path[fill] { fill: var(--mw-navy-deep) !important; }
+.admin-sidebar-mobile .admin-sidebar-link.active .side-icon-svg svg path[stroke] { stroke: var(--mw-navy-deep) !important; }
+
+/* ════════════════════════════════════════════════════════════════════════
+   TOP BAR
+   ════════════════════════════════════════════════════════════════════════ */
+.admin-dashboard .admin-main-header {
+    background: #ffffff;
+    border-bottom: 1px solid var(--mw-stone);
+    box-shadow: 0 1px 2px rgba(20, 33, 58, 0.04);
+}
+
+.admin-dashboard .admin-dashboard-desc { color: var(--mw-slate); }
+
+.admin-dashboard .admin-user-avatar {
+    border: 2px solid var(--mw-gold);
+    padding: 1px;
+    object-fit: cover;
+}
+
+.admin-dashboard .admin-user-name { color: var(--mw-navy) !important; }
+.admin-dashboard .admin-user-email { color: var(--mw-slate) !important; }
+
+/* ════════════════════════════════════════════════════════════════════════
+   STAT CARDS
+   ════════════════════════════════════════════════════════════════════════ */
+.admin-dashboard .admin-statistics-card {
+    background: #ffffff;
+    border: 1px solid var(--mw-stone);
+    border-radius: var(--radius-md, 8px);
+    box-shadow: 0 1px 2px rgba(20, 33, 58, 0.04);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+.admin-dashboard .dashboard-card-link:hover .admin-statistics-card {
+    border-color: var(--mw-gold);
+    box-shadow: 0 6px 18px rgba(27, 42, 74, 0.08);
+    transform: translateY(-2px);
+}
+
+.admin-dashboard .admin-statistics-label { color: var(--mw-slate); }
+
+/* Icon chip → gold tint, gold mark */
+.admin-dashboard .admin-statistics-icon-wrapper {
+    background: var(--mw-gold-fill);
+    border-radius: var(--radius-sm, 6px);
+}
+.admin-dashboard .admin-statistics-icon-wrapper svg path { fill: var(--mw-gold-deep); }
+
+.admin-dashboard .admin-statistics-icon-wrapper.require { background: var(--mw-amber-fill); }
+.admin-dashboard .admin-statistics-icon-wrapper.require svg path { fill: var(--mw-amber-text); }
+
+/* Success subtext keeps green; caution keeps amber */
+.admin-dashboard .admin-statistics-subtext { color: var(--mw-success-text); }
+.admin-dashboard small.admin-statistics-subtext.Requires { color: var(--mw-amber-text); }
+
+/* ════════════════════════════════════════════════════════════════════════
+   URGENT ACTIONS  (internal triage — clay/amber, never alarmist red)
+   ════════════════════════════════════════════════════════════════════════ */
+.admin-dashboard .admin-urgent-actions,
+.admin-dashboard .admin-recent-notifications {
+    background: #ffffff;
+    border: 1px solid var(--mw-stone);
+    border-radius: var(--radius-md, 8px);
+    box-shadow: 0 1px 2px rgba(20, 33, 58, 0.04);
+}
+
+.admin-dashboard .admin-urgent-badge {
+    background: var(--mw-danger-fill);
+    color: var(--mw-danger-text);
+    border: 1px solid var(--mw-danger-line);
+}
+
+.admin-dashboard .admin-urgent-item.first {
+    background: var(--mw-danger-fill);
+    border: 1px solid var(--mw-danger-line);
+    border-radius: var(--radius-sm, 6px);
+}
+.admin-dashboard .admin-urgent-item.second {
+    background: var(--mw-amber-fill);
+    border: 1px solid var(--mw-amber-line);
+    border-radius: var(--radius-sm, 6px);
+}
+
+.admin-dashboard .admin-urgent-heading { color: var(--mw-navy) !important; }
+.admin-dashboard .admin-urgent-description { color: var(--mw-slate); }
+
+/* Triage actions = navy (structure), not red */
+.admin-dashboard button.admin-urgent-button-review {
+    background: var(--mw-navy);
+    color: #ffffff;
+}
+.admin-dashboard button.admin-urgent-button-review:hover { background: var(--mw-navy-light); }
+
+.admin-dashboard button.admin-urgent-button-contact {
+    background: #ffffff;
+    color: var(--mw-navy);
+    border: 1px solid var(--mw-stone);
+}
+.admin-dashboard button.admin-urgent-button-contact:hover { border-color: var(--mw-gold); }
+
+/* ════════════════════════════════════════════════════════════════════════
+   RECENT NOTIFICATIONS
+   ════════════════════════════════════════════════════════════════════════ */
+.admin-dashboard .admin-notification-item {
+    padding: 12px;
+    border-radius: var(--radius-sm, 6px);
+    border: 1px solid transparent;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.admin-dashboard .admin-notification-item:hover {
+    background: var(--mw-sand);
+    border-color: var(--mw-stone);
+}
+.admin-dashboard .notification-link {
+    display: flex;
+    gap: 12px;
+    text-decoration: none;
+    width: 100%;
+}
+
+.admin-dashboard p.admin-notification-title { color: var(--mw-navy); }
+.admin-dashboard p.admin-notification-description { color: var(--mw-slate); }
+.admin-dashboard small.admin-notification-time,
+.admin-dashboard .admin-notification-time { color: var(--mw-slate); }
+
+/* Notification badges retinted onto the warm palette */
+.admin-dashboard span.admin-notification-icon-wrapper.admin-icon-green  { background: var(--mw-success-fill); }
+.admin-dashboard span.admin-notification-icon-wrapper.admin-icon-blue   { background: var(--mw-info-fill); }
+.admin-dashboard span.admin-notification-icon-wrapper.admin-icon-purple { background: var(--mw-gold-fill); }
+.admin-dashboard span.admin-notification-icon-wrapper.admin-icon-orange { background: var(--mw-amber-fill); }
+.admin-dashboard span.admin-notification-icon-wrapper.admin-icon-purple svg path { fill: var(--mw-gold-deep); }
+
+/* ════════════════════════════════════════════════════════════════════════
+   QUICK ACTIONS
+   ════════════════════════════════════════════════════════════════════════ */
+.admin-dashboard .admin-quick-actions {
+    background: #ffffff;
+    border: 1px solid var(--mw-stone);
+    border-radius: var(--radius-md, 8px);
+    box-shadow: 0 1px 2px rgba(20, 33, 58, 0.04);
+}
+.admin-dashboard .admin-quick-actions-title { border-bottom: 1px solid var(--mw-stone); }
+
+/* Primary action = GOLD on navy text (the single action color) */
+.admin-dashboard button.admin-button-add-user {
+    background: var(--mw-gold);
+    color: var(--mw-navy-deep);
+    font-weight: 600;
+}
+.admin-dashboard button.admin-button-add-user:hover { background: var(--mw-gold-light); }
+.admin-dashboard button.admin-button-add-user svg path { fill: var(--mw-navy-deep); }
+
+/* Secondary action = navy */
+.admin-dashboard button.admin-button-create-template {
+    background: var(--mw-navy);
+    color: #ffffff;
+}
+.admin-dashboard button.admin-button-create-template:hover { background: var(--mw-navy-light); }
+
+/* ════════════════════════════════════════════════════════════════════════
+   SHARED COMPONENTS (profile page, tables, generic cards)
+   ════════════════════════════════════════════════════════════════════════ */
+.admin-dashboard .card {
+    border: 1px solid var(--mw-stone);
+    border-radius: var(--radius-md, 8px);
+}
+
+.admin-dashboard .admin-profile-header,
+.admin-dashboard .admin-user-donations,
+.admin-dashboard .admin-security-settings { background: #ffffff; }
+
+.admin-dashboard .admin-profile-avatar { border: 2px solid var(--mw-gold); }
+
+.admin-dashboard .admin-profile-verified,
+.admin-dashboard .admin-status-badge-active {
+    background: var(--mw-success-fill) !important;
+    color: var(--mw-success-text) !important;
+}
+.admin-dashboard .admin-status-badge-review {
+    background: var(--mw-amber-fill) !important;
+    color: var(--mw-amber-text) !important;
+}
+
+/* Tables */
+.admin-dashboard .table thead th {
+    background: var(--mw-sand);
+    color: var(--mw-slate);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 11px;
+    border-bottom: 1px solid var(--mw-stone);
+}
+.admin-dashboard .table td { color: var(--mw-ink); border-color: var(--mw-sand); }
+.admin-dashboard .donation-receipt { color: var(--mw-gold-deep); }
+.admin-dashboard .donation-receipt svg path { fill: var(--mw-gold-deep); }
+
+/* Buttons — green success CTAs become gold; primary forms become navy */
+.admin-dashboard .btn-success,
+.admin-dashboard .admin-profile-reminder-btn,
+.admin-dashboard .admin-btn-download,
+.admin-dashboard .admin-btn-manage {
+    background: var(--mw-navy) !important;
+    border-color: var(--mw-navy) !important;
+    color: #ffffff !important;
+}
+.admin-dashboard .admin-btn-edit {
+    background: var(--mw-gold) !important;
+    border-color: var(--mw-gold) !important;
+    color: var(--mw-navy-deep) !important;
+    font-weight: 600;
+}
+.admin-dashboard .Change-Password-btn {
+    /* Base sheet strips this button to bare text (transparent, no border);
+       restore a real button shape to match the other gold actions. */
+    background: var(--mw-gold);
+    color: var(--mw-navy-deep);
+    font-weight: 600;
+    font-size: 13.5px;
+    padding: 9px 18px;
+    border: none;
+    border-radius: var(--radius-sm, 6px);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+.admin-dashboard .Change-Password-btn:hover {
+    background: var(--mw-gold-deep);
+    color: #ffffff;
+}
+
+/* Section-title leaf icons → gold to match the accent */
+.admin-dashboard .admin-info-header svg path,
+.admin-dashboard .admin-donation-section-title svg path,
+.admin-dashboard .svg-container.green svg path { fill: var(--mw-gold-deep); }
+
+/* Notification bell badge stays a clear count marker but on gold */
+.admin-dashboard .admin-notification-badge { background: var(--mw-gold-deep); }
+
+/* ════════════════════════════════════════════════════════════════════════
+   LIST / DIRECTORY PAGES  (Clients, Lawyers, Scholars, Providers,
+   Referral, Packages, Charities — shared .admin-user-* scaffolding)
+   ════════════════════════════════════════════════════════════════════════ */
+.admin-dashboard .admin-user-page { background-color: var(--mw-warm); }
+
+/* Page heading echoes the display face */
+.admin-dashboard .admin-user-page > h1,
+.admin-dashboard .admin-user-table-title {
+    font-family: 'Inter', Georgia, serif !important;
+    color: var(--mw-navy) !important;
+}
+
+/* Search field */
+.admin-dashboard .admin-user-search-input {
+    border: 1px solid var(--mw-stone);
+    border-radius: var(--radius-sm, 6px);
+    color: var(--mw-ink);
+}
+.admin-dashboard .admin-user-search-input:focus { border-color: var(--mw-gold); }
+.admin-dashboard .admin-user-search-icon svg path { stroke: var(--mw-slate); }
+
+/* Primary "Add / Export" pills → GOLD (single action color) */
+.admin-dashboard a.btn.lawyers-add-btn,
+.admin-dashboard .lawyers-add-btn {
+    background: var(--mw-gold) !important;
+    color: var(--mw-navy-deep) !important;
+    border-color: var(--mw-gold) !important;
+    font-weight: 600;
+}
+.admin-dashboard a.btn.lawyers-add-btn:hover,
+.admin-dashboard .lawyers-add-btn:hover { background: var(--mw-gold-light) !important; }
+.admin-dashboard .lawyers-add-btn .admin-user-addnew-icon svg path { stroke: var(--mw-navy-deep) !important; }
+/* The second pill in a toolbar reads as secondary → navy */
+.admin-dashboard .admin-user-actions a.lawyers-add-btn:last-child {
+    background: var(--mw-navy) !important;
+    color: #ffffff !important;
+    border-color: var(--mw-navy) !important;
+}
+.admin-dashboard .admin-user-actions a.lawyers-add-btn:last-child:hover { background: var(--mw-navy-light) !important; }
+.admin-dashboard .admin-user-actions a.lawyers-add-btn:last-child .admin-user-addnew-icon svg path { stroke: #ffffff !important; }
+
+/* Table shell + header */
+.admin-dashboard .admin-user-table-wrapper.card,
+.admin-dashboard .admin-user-table-wrapper {
+    border: 1px solid var(--mw-stone);
+    border-radius: var(--radius-md, 8px);
+    background: #ffffff;
+}
+.admin-dashboard .admin-user-page .admin-user-table thead tr,
+.admin-dashboard .admin-user-page .admin-user-table thead { background: var(--mw-sand); }
+.admin-dashboard .admin-user-page .admin-user-table th { color: var(--mw-slate); }
+.admin-dashboard .admin-user-page .admin-user-table tbody tr:hover { background: var(--mw-warm); }
+
+/* Names / emails / dates */
+.admin-dashboard a.client-name { color: var(--mw-navy) !important; }
+.admin-dashboard a.user-email,
+.admin-dashboard span.admin-user-created-date { color: var(--mw-ink); }
+
+/* Avatar placeholder → navy→gold brand gradient */
+.admin-dashboard .admin-user-table-avatar-placeholder {
+    background: linear-gradient(135deg, var(--mw-navy) 0%, var(--mw-gold-deep) 100%) !important;
+}
+.admin-dashboard .admin-user-table-avatar { border: 1px solid var(--mw-stone); }
+
+/* Package badges → gold family */
+.admin-dashboard .clients-management-badge--advanced,
+.admin-dashboard .clients-management-badge--premium {
+    border-color: var(--mw-gold) !important;
+    background: var(--mw-gold-fill) !important;
+    color: var(--mw-gold-deep) !important;
+}
+
+/* Account-status badge: active=success (kept), inactive=neutral */
+.admin-dashboard .admin-user-status-badge.status-active {
+    background-color: var(--mw-success-fill);
+    border-color: var(--mw-success-line);
+    color: var(--mw-success-text);
+}
+
+/* Row action icons: hover → gold */
+.admin-dashboard .admin-user-action-btn:hover svg path[stroke] { stroke: var(--mw-gold-deep); }
+.admin-dashboard .admin-user-view-data-btn { color: var(--mw-navy); }
+
+/* Pagination → gold active */
+.admin-dashboard a.admin-user-pagination-link { border-color: var(--mw-stone); color: var(--mw-ink); }
+.admin-dashboard a.admin-user-pagination-link.active {
+    color: var(--mw-navy-deep);
+    border-color: var(--mw-gold);
+    background: var(--mw-gold-fill);
+    font-weight: 600;
+}
+
+/* Generic status pill (Clients .status-badge) success kept on warm palette */
+.admin-dashboard .status-badge {
+    background: var(--mw-success-fill);
+    border-color: var(--mw-success-line);
+    color: var(--mw-success-text);
+}
+.admin-dashboard .status-badge--neutral {
+    background: var(--mw-sand);
+    border-color: var(--mw-stone);
+    color: var(--mw-slate);
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   FORMS  (Add / Edit across all sections)
+   ════════════════════════════════════════════════════════════════════════ */
+.admin-dashboard .form-control,
+.admin-dashboard .form-select {
+    border-radius: var(--radius-sm, 6px);
+    border-color: var(--mw-stone);
+    color: var(--mw-ink);
+}
+.admin-dashboard .form-control:focus,
+.admin-dashboard .form-select:focus {
+    border-color: var(--mw-gold);
+    box-shadow: 0 0 0 3px var(--mw-gold-fill);
+}
+.admin-dashboard .form-label,
+.admin-dashboard .section-label { color: var(--mw-ink); }
+.admin-dashboard .section-header { color: var(--mw-navy); }
+.admin-dashboard .section-line { background: var(--mw-stone); border-color: var(--mw-stone); }
+
+/* Toggles / switches → gold when on */
+.admin-dashboard .form-check-input:checked {
+    background-color: var(--mw-gold) !important;
+    border-color: var(--mw-gold) !important;
+}
+.admin-dashboard .form-check-input:focus {
+    border-color: var(--mw-gold);
+    box-shadow: 0 0 0 3px var(--mw-gold-fill);
+}
+
+/* Save / primary form actions → gold; cancel/secondary → outline navy */
+.admin-dashboard .client-profile-page__admin-settings-footer-save,
+.admin-dashboard .admin-standard-modal-save,
+.admin-dashboard .client-unsaved-modal__btn--primary,
+.admin-dashboard .btn--primary {
+    background: var(--mw-gold) !important;
+    border-color: var(--mw-gold) !important;
+    color: var(--mw-navy-deep) !important;
+    font-weight: 600;
+}
+.admin-dashboard .client-profile-page__admin-settings-footer-cancel,
+.admin-dashboard .btn--secondary,
+.admin-dashboard .client-unsaved-modal__btn--secondary {
+    background: #ffffff !important;
+    border: 1px solid var(--mw-stone) !important;
+    color: var(--mw-ink) !important;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   SELECT2 (filter dropdowns)
+   ════════════════════════════════════════════════════════════════════════ */
+.admin-dashboard .select2-container--default .select2-selection--single {
+    border: 1px solid var(--mw-stone);
+    border-radius: var(--radius-sm, 6px);
+    height: 44px;
+}
+.admin-dashboard .select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: var(--mw-ink);
+    line-height: 42px;
+}
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: var(--mw-navy) !important;
+}
+.select2-container--default .select2-results__option[aria-selected="true"] {
+    background-color: var(--mw-gold-fill) !important;
+    color: var(--mw-gold-deep) !important;
+}
+.select2-dropdown { border-color: var(--mw-stone); }
+
+/* ════════════════════════════════════════════════════════════════════════
+   PACKAGES / PRODUCTS / ADD-ONS  (self-contained .pkg-* / .pe-* / .btn-*
+   style blocks live in those views — override with !important, which wins
+   over their non-important rules regardless of load order)
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* Primary green CTAs → gold */
+.pkg-btn-create, .btn-add-addon, .btn-add-product, .btn-save, .pe-btn-primary {
+    background: var(--mw-gold) !important;
+    color: var(--mw-navy-deep) !important;
+    border-color: var(--mw-gold) !important;
+    font-weight: 600 !important;
+}
+.pkg-btn-create:hover, .btn-add-addon:hover, .btn-add-product:hover,
+.btn-save:hover, .pe-btn-primary:hover {
+    background: var(--mw-gold-light) !important;
+    color: var(--mw-navy-deep) !important;
+}
+
+/* Focus rings → gold */
+.pe-input:focus, .pe-select:focus,
+.addon-modal .form-select:focus, .addon-modal .form-control:focus,
+.product-modal .form-select:focus, .product-modal .form-control:focus {
+    border-color: var(--mw-gold) !important;
+    box-shadow: 0 0 0 3px var(--mw-gold-fill) !important;
+}
+
+/* Switches / checkboxes / dashed uploads → gold */
+.pe-switch.on { background: var(--mw-gold) !important; }
+.pe-checkbox { accent-color: var(--mw-gold) !important; }
+.pe-upload { color: var(--mw-gold-deep) !important; }
+
+/* Inline link actions → gold */
+.pe-link-action, .pe-section-link { color: var(--mw-gold-deep) !important; }
+.pe-link-action:hover, .pe-section-link:hover { color: var(--mw-navy) !important; }
+
+/* Green info / tip panels → warm gold-tinted */
+.pe-customer-summary, .pe-tip {
+    background: var(--mw-gold-fill) !important;
+    border-color: rgba(168,132,74,0.3) !important;
+    color: var(--mw-navy) !important;
+}
+.pe-tip-title { color: var(--mw-gold-deep) !important; }
+
+/* Off-palette teal billing pill → info (navy) tone */
+.pill-billing-monthly {
+    background: var(--mw-info-fill) !important;
+    color: var(--mw-info-text) !important;
+    border-color: var(--mw-info-line) !important;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   LAWYERS & SCHOLARS  (shared .lawyers-* classes from LawyerStyle.css /
+   ScholorStyle.css — those sheets load after this one but use no !important,
+   so these !important rules win)
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* Add button → gold (covers btn-dark base) */
+.admin-dashboard a.lawyers-add-btn,
+.admin-dashboard .btn.lawyers-add-btn {
+    background: var(--mw-gold) !important;
+    color: var(--mw-navy-deep) !important;
+    border-color: var(--mw-gold) !important;
+    font-weight: 600 !important;
+}
+.admin-dashboard a.lawyers-add-btn:hover,
+.admin-dashboard .btn.lawyers-add-btn:hover { background: var(--mw-gold-light) !important; }
+
+/* Stat cards */
+.admin-dashboard .lawyers-stat-card {
+    border: 1px solid var(--mw-stone) !important;
+    border-radius: var(--radius-md, 8px) !important;
+}
+.admin-dashboard .lawyers-stat-card .stat-value {
+    font-family: 'Inter', Georgia, serif !important;
+    color: var(--mw-navy) !important;
+    font-size: 30px !important;
+}
+.admin-dashboard .lawyers-stat-card .stat-label { color: var(--mw-slate) !important; }
+
+/* Stat icon chips → alternating navy / gold (override inline SVG strokes too) */
+.admin-dashboard .total-lawyers-icon,
+.admin-dashboard .active-applications-icon { background: rgba(27, 42, 74, 0.08) !important; }
+.admin-dashboard .active-lawyers-icon,
+.admin-dashboard .completed-applications-icon { background: var(--mw-gold-fill) !important; }
+.admin-dashboard .total-lawyers-icon svg path,
+.admin-dashboard .active-applications-icon svg path { stroke: var(--mw-navy) !important; }
+.admin-dashboard .active-lawyers-icon svg path,
+.admin-dashboard .completed-applications-icon svg path { stroke: var(--mw-gold-deep) !important; }
+
+/* Filter card */
+.admin-dashboard .lawyers-filters {
+    border: 1px solid var(--mw-stone) !important;
+    border-radius: var(--radius-md, 8px) !important;
+}
+.admin-dashboard .filter-label { color: var(--mw-ink) !important; }
+.admin-dashboard .lawyers-search-input:focus {
+    border-color: var(--mw-gold) !important;
+    box-shadow: 0 0 0 3px var(--mw-gold-fill) !important;
+}
+
+/* Table */
+.admin-dashboard .lawyers-table-wrapper {
+    border: 1px solid var(--mw-stone) !important;
+    border-radius: var(--radius-md, 8px) !important;
+}
+.admin-dashboard .lawyers-table thead th {
+    background: var(--mw-sand) !important;
+    color: var(--mw-slate) !important;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 11px;
+}
+.admin-dashboard .lawyer-name { color: var(--mw-navy) !important; }
+.admin-dashboard .lawyer-avatar-placeholder {
+    background: linear-gradient(135deg, var(--mw-navy) 0%, var(--mw-gold-deep) 100%) !important;
+}
+
+/* Specialization badge (blue) → gold */
+.admin-dashboard .bg-primary-light {
+    background: var(--mw-gold-fill) !important;
+    border-color: rgba(168, 132, 74, 0.3) !important;
+    color: var(--mw-gold-deep) !important;
+}
+
+/* Status badge — active=success on warm palette */
+.admin-dashboard span.status-badge.active {
+    background: var(--mw-success-fill) !important;
+    border-color: var(--mw-success-line) !important;
+    color: var(--mw-success-text) !important;
+}
+.admin-dashboard span.status-badge.active::before { background: var(--mw-success-text) !important; }
+
+/* Row actions */
+.admin-dashboard .action-btn:hover { background: var(--mw-sand) !important; }
+.admin-dashboard .action-view svg path { stroke: var(--mw-gold-deep) !important; }
+
+/* ════════════════════════════════════════════════════════════════════════
+   ADD / EDIT LAWYER & SCHOLAR FORMS  (shared AddLawyerStyle.css under
+   .add-lawyer-page — nested rules are 0,2,0 specificity, so these
+   .admin-dashboard-scoped 0,3,0 rules win without fighting source order)
+   ════════════════════════════════════════════════════════════════════════ */
+.admin-dashboard .add-lawyer-page { background: var(--mw-warm); }
+
+/* Back link */
+.admin-dashboard .add-lawyer-page .back-link {
+    color: var(--mw-slate);
+    border: 1px solid var(--mw-stone);
+    border-radius: var(--radius-sm, 6px);
+}
+.admin-dashboard .add-lawyer-page .back-link:hover { border-color: var(--mw-gold); color: var(--mw-navy); }
+.admin-dashboard .add-lawyer-page .back-link svg path { stroke: var(--mw-slate); }
+
+/* Section cards */
+.admin-dashboard .add-lawyer-page .card-section {
+    border: 1px solid var(--mw-stone);
+    border-radius: var(--radius-md, 8px);
+}
+
+/* Section heading → Patriva small uppercase slate label */
+.admin-dashboard .add-lawyer-page .section-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--mw-slate);
+}
+
+/* Fields */
+.admin-dashboard .add-lawyer-page .form-label { color: var(--mw-ink); font-family: 'Inter', sans-serif; }
+.admin-dashboard .add-lawyer-page .form-control {
+    background: #fff;
+    border: 1px solid var(--mw-stone);
+    border-radius: var(--radius-sm, 6px);
+}
+.admin-dashboard .add-lawyer-page .form-control:focus {
+    border-color: var(--mw-gold);
+    box-shadow: 0 0 0 3px var(--mw-gold-fill);
+}
+.admin-dashboard .add-lawyer-page .select2-container--default .select2-selection--single {
+    background: #fff;
+    border: 1px solid var(--mw-stone);
+    border-radius: var(--radius-sm, 6px);
+}
+
+/* Submit (Add/Edit) → gold; Cancel → outline */
+.admin-dashboard .add-lawyer-page .add-btn,
+.admin-dashboard .add-lawyer-page button.btn.add-btn {
+    background: var(--mw-gold) !important;
+    color: var(--mw-navy-deep) !important;
+    border-color: var(--mw-gold) !important;
+    font-weight: 600 !important;
+}
+.admin-dashboard .add-lawyer-page .add-btn:hover { background: var(--mw-gold-light) !important; }
+.admin-dashboard .add-lawyer-page .cancel-btn,
+.admin-dashboard .add-lawyer-page button.btn.btn-light.cancel-btn {
+    background: #fff !important;
+    border: 1px solid var(--mw-stone) !important;
+    color: var(--mw-ink) !important;
+}
+
+/* Upload / invitation action buttons → navy & navy-outline */
+.admin-dashboard .add-lawyer-page .btn-primary {
+    background: var(--mw-navy) !important;
+    border-color: var(--mw-navy) !important;
+    color: #fff !important;
+}
+.admin-dashboard .add-lawyer-page .btn-primary:hover { background: var(--mw-navy-light) !important; }
+.admin-dashboard .add-lawyer-page .btn-outline-primary,
+.admin-dashboard .add-lawyer-page .btn-outline-success {
+    background: transparent !important;
+    color: var(--mw-navy) !important;
+    border-color: var(--mw-navy) !important;
+}
+.admin-dashboard .add-lawyer-page .btn-outline-primary:hover,
+.admin-dashboard .add-lawyer-page .btn-outline-success:hover {
+    background: var(--mw-navy) !important;
+    color: #fff !important;
+}
+
+/* Profile-initials avatar → navy→gold brand gradient (over inline style) */
+.admin-dashboard #profileInitials {
+    background: linear-gradient(135deg, var(--mw-navy) 0%, var(--mw-gold-deep) 100%) !important;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   UNIFIED RESPONSIVE SIDEBAR  (single _AdminSidebar partial in #adminSidebar)
+   Desktop: sticky navy column · Tablet/mobile: off-canvas drawer + overlay
+   ════════════════════════════════════════════════════════════════════════ */
+.admin-dashboard .admin-sidebar.admin-sidebar-unified { padding: 0; }
+.admin-dashboard .admin-sidebar-unified .admin-sidebar-navigation.card {
+    border: none;
+    border-radius: 0;
+    background: var(--mw-navy);
+}
+
+/* Section labels (Operations / Catalog / Giving / Configuration) */
+.admin-dashboard .admin-sidebar-section-label {
+    list-style: none;
+    margin: 16px 16px 6px;
+    padding: 0 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--mw-gold-light);
+    opacity: 0.8;
+    pointer-events: none;
+    user-select: none;
+}
+.admin-dashboard .admin-sidebar-list > .admin-sidebar-section-label:first-child { margin-top: 4px; }
+
+/* Submenu caret (Packages) */
+.admin-dashboard .admin-sidebar-caret {
+    margin-left: auto;
+    display: inline-flex;
+    color: #97a3bd;
+    transition: transform 0.2s ease, color 0.15s ease;
+}
+.admin-dashboard .admin-sidebar-item-has-sub.open .admin-sidebar-caret { transform: rotate(180deg); }
+.admin-dashboard .admin-sidebar-link-packages.active .admin-sidebar-caret { color: var(--mw-navy-deep); }
+
+/* Desktop: full-height sticky scrollable column */
+@media (min-width: 992px) {
+    .admin-dashboard .admin-sidebar.admin-sidebar-unified {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+    }
+}
+
+/* Page scrollbar — same brand treatment as the customer pages
+   (customer-dashboard.css): slim dark-navy pill inset on a cream gutter.
+   Unscoped on purpose: this file only loads on admin pages, and the sidebar /
+   table scrollers below override it with their own more specific rules. */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #F5F7FA; }
+::-webkit-scrollbar-thumb {
+    background: #16304D;
+    border-radius: var(--radius-pill, 999px);
+    border: 3px solid #F5F7FA;
+    background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover { background-color: #345C8A; }
+::-webkit-scrollbar-corner { background: #F5F7FA; }
+@supports not selector(::-webkit-scrollbar) {
+    html {
+        scrollbar-width: thin;
+        scrollbar-color: #16304D #F5F7FA;
+    }
+}
+
+/* Sidebar scrollbar — tone-on-tone navy pill on a transparent track, same as
+   the customer rail (.cdash__rail). The element that actually scrolls is the
+   inner .mw-side-nav (flex:1, overflow-y:auto); the aside is covered too for
+   the off-canvas drawer. No scrollbar-width/scrollbar-color on the Chromium
+   path: setting them makes Chromium ignore ::-webkit-scrollbar and render its
+   stock light bar instead. */
+.admin-dashboard .admin-sidebar-unified::-webkit-scrollbar,
+.admin-dashboard .mw-side-nav::-webkit-scrollbar { width: 8px; }
+.admin-dashboard .admin-sidebar-unified::-webkit-scrollbar-track,
+.admin-dashboard .mw-side-nav::-webkit-scrollbar-track { background: transparent; }
+.admin-dashboard .admin-sidebar-unified::-webkit-scrollbar-thumb,
+.admin-dashboard .mw-side-nav::-webkit-scrollbar-thumb {
+    background: #345C8A;
+    border-radius: var(--radius-pill, 999px);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+.admin-dashboard .admin-sidebar-unified::-webkit-scrollbar-thumb:hover,
+.admin-dashboard .mw-side-nav::-webkit-scrollbar-thumb:hover { background-color: #27508F; }
+@supports not selector(::-webkit-scrollbar) {
+    .admin-dashboard .admin-sidebar.admin-sidebar-unified,
+    .admin-dashboard .mw-side-nav {
+        scrollbar-width: thin;
+        scrollbar-color: #345C8A transparent;
+    }
+}
+
+/* Tablet / mobile: off-canvas drawer */
+@media (max-width: 991.98px) {
+    .admin-dashboard .admin-sidebar.admin-sidebar-unified {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 276px;
+        max-width: 84vw;
+        z-index: 1050;
+        transform: translateX(-100%);
+        transition: transform 0.26s ease;
+        overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(30, 58, 95, 0.35);
+    }
+    .admin-dashboard .admin-sidebar.admin-sidebar-unified.active { transform: translateX(0); }
+}
+
+/* Backdrop (only while the drawer is open; never on desktop) */
+.admin-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 33, 58, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.26s ease, visibility 0.26s ease;
+    z-index: 1040;
+}
+.admin-overlay.active { opacity: 1; visibility: visible; }
+@media (min-width: 992px) {
+    .admin-overlay { display: none !important; }
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   SHARED PAGE-LAYOUT PRIMITIVES  (Patriva)
+   Standardized building blocks every admin page can reuse — page toolbar,
+   KPI strip, filter card, gold/navy action buttons. Promoted here from the
+   Clients rebuild so the patterns are defined once and stay consistent.
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* Page toolbar: display title + subtitle on the left, actions on the right */
+.mw-page-toolbar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+.mw-page-title {
+    font-family: 'Inter', Georgia, serif;
+    font-weight: 600;
+    color: var(--mw-navy);
+    font-size: 30px;
+    line-height: 1.1;
+    letter-spacing: 0.005em;
+    margin: 0;
+}
+.mw-page-sub { color: var(--mw-slate); font-size: 13.5px; margin: 4px 0 0; }
+.mw-toolbar-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* Action buttons: gold = primary single action, navy = secondary */
+.mw-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 42px;
+    padding: 0 18px;
+    border-radius: var(--radius-sm, 6px);
+    font-size: 13.5px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.mw-btn-gold { background: var(--mw-gold); color: var(--mw-navy-deep); }
+.mw-btn-gold:hover { background: var(--mw-gold-light); color: var(--mw-navy-deep); }
+.mw-btn-navy { background: #fff; color: var(--mw-navy); border-color: var(--mw-stone); }
+.mw-btn-navy:hover { border-color: var(--mw-gold); }
+
+/* KPI strip */
+.mw-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+}
+.mw-kpi-card {
+    background: #fff;
+    border: 1px solid var(--mw-stone);
+    border-radius: var(--radius-md, 8px);
+    box-shadow: 0 1px 2px rgba(20, 33, 58, 0.04);
+    padding: 20px 22px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+.mw-kpi-label { color: var(--mw-slate); font-size: 12.5px; margin: 0 0 8px; }
+.mw-kpi-value {
+    font-family: 'Inter', Georgia, serif;
+    font-weight: 600;
+    color: var(--mw-navy);
+    font-size: 32px;
+    line-height: 1;
+    margin: 0;
+}
+.mw-kpi-sub { color: var(--mw-slate); font-size: 11.5px; margin: 10px 0 0; }
+.mw-kpi-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm, 6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: var(--mw-gold-fill);
+}
+.mw-kpi-icon svg path { stroke: var(--mw-gold-deep); }
+.mw-kpi-icon--navy { background: rgba(27, 42, 74, 0.08); }
+.mw-kpi-icon--navy svg path { stroke: var(--mw-navy); }
+
+/* Filter card */
+.mw-filter-card {
+    background: #fff;
+    border: 1px solid var(--mw-stone);
+    border-radius: var(--radius-md, 8px);
+    padding: 18px;
+    margin-bottom: 18px;
+}
+.mw-filter-grid {
+    display: grid;
+    grid-template-columns: 1.8fr 1fr 1fr;
+    gap: 14px;
+    align-items: end;
+}
+.mw-field-label {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--mw-ink);
+    margin-bottom: 7px;
+}
+.mw-filter-card .admin-user-search { max-width: none; min-width: 0; }
+.mw-filter-card .admin-user-filter-status,
+.mw-filter-card .admin-user-filter-wills { width: 100%; }
+
+@media (max-width: 991px) {
+    .mw-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .mw-filter-grid { grid-template-columns: 1fr; }
+}
+
+/* Dashboard section grouping (Overview / Sessions / Lawyers / Scholars) */
+.mw-section { margin-top: 30px; }
+.mw-section-heading {
+    font-family: 'Inter', Georgia, serif;
+    font-weight: 600;
+    color: var(--mw-navy);
+    font-size: 22px;
+    line-height: 1.15;
+    letter-spacing: 0.005em;
+    margin: 0 0 4px;
+}
+.mw-section-sub { color: var(--mw-slate); font-size: 12.5px; margin: 0 0 16px; }
+
+/* ════════════════════════════════════════════════════════════════════════
+   HEADER CHROME  (global search · notifications · account menu)
+   ════════════════════════════════════════════════════════════════════════ */
+.admin-dashboard .admin-user-section { display: flex; align-items: center; gap: 14px; }
+.mw-pop { position: relative; }
+
+.mw-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 256px;
+    background: #fff;
+    border: 1px solid var(--mw-stone);
+    border-radius: var(--radius-md, 8px);
+    box-shadow: 0 16px 40px rgba(30, 58, 95, 0.16);
+    padding: 6px;
+    z-index: 1000;
+}
+.mw-dropdown[hidden] { display: none; }
+
+/* Search */
+.mw-topsearch { width: 240px; }
+.mw-topsearch-box {
+    display: flex; align-items: center; gap: 8px; margin: 0;
+    background: #fff; border: 1px solid var(--mw-stone); border-radius: var(--radius-sm, 6px); padding: 8px 12px;
+}
+.mw-topsearch-box:focus-within { border-color: var(--mw-gold); }
+.mw-topsearch-input {
+    border: none; outline: none; background: transparent; width: 100%;
+    font-size: 13px; color: var(--mw-ink); font-family: 'Inter', sans-serif;
+}
+.mw-search-dd { left: 0; right: auto; width: 260px; }
+.mw-dd-section {
+    font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--mw-slate); padding: 8px 12px 4px; margin: 0;
+}
+.mw-dd-item {
+    display: flex; align-items: center; gap: 10px; padding: 9px 12px;
+    border-radius: var(--radius-sm, 6px); color: var(--mw-ink); font-size: 13px; text-decoration: none;
+}
+.mw-dd-item:hover { background: var(--mw-warm); color: var(--mw-navy); }
+.mw-dd-empty { padding: 12px; color: var(--mw-slate); font-size: 12.5px; margin: 0; }
+
+/* Notifications */
+.mw-iconbtn {
+    position: relative; background: transparent; border: none; cursor: pointer;
+    display: inline-flex; padding: 7px; border-radius: var(--radius-sm, 6px);
+}
+.mw-iconbtn:hover { background: var(--mw-sand); }
+.mw-badge {
+    position: absolute; top: 0; right: 0; min-width: 16px; height: 16px; padding: 0 4px;
+    border-radius: var(--radius-pill, 999px); background: var(--mw-gold); color: var(--mw-navy-deep);
+    font-size: 9.5px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+    font-family: 'Inter', sans-serif;
+}
+.mw-notif-dd { width: 320px; padding: 0; overflow: hidden; }
+.mw-dd-head {
+    padding: 13px 16px; border-bottom: 1px solid var(--mw-sand);
+    font-family: 'Inter', sans-serif; font-weight: 600; color: var(--mw-navy); font-size: 13.5px;
+}
+.mw-notif-item { display: flex; gap: 10px; padding: 11px 16px; border-bottom: 1px solid var(--mw-sand); text-decoration: none; }
+.mw-notif-item:hover { background: var(--mw-warm); }
+.mw-notif-dot { width: 8px; height: 8px; border-radius: var(--radius-pill, 999px); background: var(--mw-gold-deep); margin-top: 5px; flex-shrink: 0; }
+.mw-notif-body { display: flex; flex-direction: column; min-width: 0; }
+.mw-notif-title { color: var(--mw-navy); font-size: 12.5px; font-weight: 500; font-family: 'Inter', sans-serif; }
+.mw-notif-desc { color: var(--mw-slate); font-size: 11.5px; }
+.mw-notif-time { color: var(--mw-stone); font-size: 10.5px; margin-top: 1px; }
+.mw-dd-foot {
+    display: block; text-align: center; padding: 11px; color: var(--mw-navy); font-size: 12px;
+    background: var(--mw-warm); border-top: 1px solid var(--mw-sand); text-decoration: none;
+}
+.mw-dd-foot:hover { color: var(--mw-gold-deep); }
+
+/* Account menu */
+.mw-acct-btn { display: flex; align-items: center; gap: 10px; background: transparent; border: none; cursor: pointer; padding: 4px; border-radius: var(--radius-sm, 6px); }
+.mw-acct-btn:hover { background: var(--mw-sand); }
+.mw-acct-id { display: flex; flex-direction: column; text-align: left; line-height: 1.25; }
+.mw-acct-dd { width: 256px; padding: 0; overflow: hidden; }
+.mw-acct-head { display: flex; align-items: center; gap: 12px; padding: 15px 16px; border-bottom: 1px solid var(--mw-sand); }
+.mw-acct-name { color: var(--mw-navy); font-weight: 600; font-size: 13.5px; margin: 0; font-family: 'Inter', sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mw-acct-mail { color: var(--mw-slate); font-size: 11.5px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mw-acct-link {
+    display: flex; align-items: center; gap: 10px; width: 100%; padding: 11px 16px;
+    color: var(--mw-ink); font-size: 12.5px; text-decoration: none; background: transparent;
+    border: none; cursor: pointer; font-family: 'Inter', sans-serif;
+}
+.mw-acct-link:hover { background: var(--mw-warm); }
+
+/* Legacy views ported from the old public 3/9 grid keep a root
+   `col-12 col-lg-9` wrapper (Subscription, Template/Create, UserPayments…),
+   which pointlessly caps them at 75% width inside the admin shell — there is
+   no side column here. Stretch them back to full width. */
+.container-fluid > .col-12.col-lg-9 {
+    width: 100%;
+}
+.mw-acct-signout { margin: 0; border-top: 1px solid var(--mw-sand); background: var(--mw-warm); }
+
+/* ── Clients Management table — re-skin legacy elements to the Navy/Gold system
+   (avatars, package & status badges, action icons). The avatar placeholder and
+   SVG icon colors are hardcoded in the markup, hence !important / attribute
+   selectors. Will-status badge tints live in the view's getStatusStyle(). ── */
+.admin-dashboard .admin-user-table-avatar-placeholder {
+    background: var(--mw-gold-fill) !important;
+    color: var(--mw-gold-deep) !important;
+    border-radius: 10px !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 12.5px !important;
+}
+.admin-dashboard .admin-user-table-avatar { border-radius: 10px; }
+
+.admin-dashboard .clients-management-badge {
+    font-family: 'Inter', sans-serif;
+    border-color: var(--mw-stone);
+    background: var(--mw-sand);
+    color: var(--mw-ink);
+}
+/* Named/paid packages carry the single gold accent */
+.admin-dashboard .clients-management-badge--advanced,
+.admin-dashboard .clients-management-badge--premium,
+.admin-dashboard .clients-management-badge--default {
+    border-color: var(--mw-gold-light);
+    background: var(--mw-gold-fill);
+    color: var(--mw-gold-deep);
+}
+.admin-dashboard .clients-management-badge--empty {
+    border-color: var(--mw-stone);
+    background: transparent;
+    color: var(--mw-slate);
+    font-style: italic;
+}
+
+.admin-dashboard .admin-user-status-badge { font-family: 'Inter', sans-serif; }
+.admin-dashboard .admin-user-status-badge.status-active {
+    background: var(--mw-success-fill); color: var(--mw-success-text); border: 1px solid var(--mw-success-line);
+}
+.admin-dashboard .admin-user-status-badge.status-inactive {
+    background: var(--mw-sand); color: var(--mw-slate); border: 1px solid var(--mw-stone);
+}
+.admin-dashboard .admin-user-status-badge.status-pending {
+    background: var(--mw-amber-fill); color: var(--mw-amber-text); border: 1px solid var(--mw-amber-line);
+}
+.admin-dashboard .admin-user-status-badge.status-suspended {
+    background: var(--mw-danger-fill); color: var(--mw-danger-text); border: 1px solid var(--mw-danger-line);
+}
+
+/* Action icons: slate at rest, gold for the primary view/create actions, danger
+   for delete. Route the hardcoded #9CA3AF strokes/fills through currentColor.
+   The download button is deliberately untouched — its green/disabled coloring
+   is applied by updateDownloadButtonsState() and must keep working. */
+.admin-dashboard .admin-user-action-btn svg path[stroke="#9CA3AF"] { stroke: currentColor; }
+.admin-dashboard .admin-user-doc-btn svg path[fill="#9ca3af"] { fill: currentColor; }
+/* Bordered chip look, matching .cat .row-action on the charity/catalog tables */
+.admin-dashboard .admin-user-page .admin-user-actions-row .admin-user-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    border-radius: var(--radius-sm, 6px);
+    background: #fff;
+    border: 1px solid var(--mw-stone);
+}
+.admin-dashboard .admin-user-page .admin-user-actions-row .admin-user-action-btn:hover {
+    background: var(--mw-sand);
+}
+.admin-dashboard .admin-user-page .admin-user-table tbody td:last-child .admin-user-actions-row { gap: 8px; }
+.admin-dashboard .admin-user-page .admin-user-actions-row .admin-user-action-divider { display: none; }
+.admin-dashboard .admin-user-page .admin-user-actions-row .admin-user-action-btn:not(.admin-user-download-btn) {
+    color: var(--mw-slate);
+}
+.admin-dashboard .admin-user-page .admin-user-actions-row .admin-user-action-btn:not(.admin-user-download-btn):hover {
+    color: var(--mw-navy);
+}
+.admin-dashboard .admin-user-page .admin-user-actions-row .admin-user-action-btn.admin-user-view-btn,
+.admin-dashboard .admin-user-page .admin-user-actions-row .admin-user-action-btn.admin-user-create-will-btn {
+    color: var(--mw-gold-deep);
+}
+.admin-dashboard .admin-user-page .admin-user-actions-row .admin-user-action-btn.admin-user-view-btn:hover,
+.admin-dashboard .admin-user-page .admin-user-actions-row .admin-user-action-btn.admin-user-create-will-btn:hover {
+    color: var(--mw-gold);
+}
+.admin-dashboard .admin-user-page .admin-user-actions-row .admin-user-action-btn.admin-user-delete-btn {
+    color: var(--mw-danger-text);
+}
+.admin-dashboard .admin-user-page .admin-user-actions-row .admin-user-action-btn.admin-user-delete-btn:hover {
+    color: #7a241c;
+}
+.mw-acct-signout-btn { color: #C0392B; font-weight: 500; }
+
+@media (max-width: 991px) {
+    .mw-topsearch { display: none; }
+    .mw-acct-id { display: none; }
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   NAVIGATION RAIL  (faithful React Sidebar — brand · role badge · sections ·
+   gold active indicator · footer). Lives on .admin-sidebar-body.mw-side.
+   ════════════════════════════════════════════════════════════════════════ */
+.admin-dashboard .admin-sidebar-body.mw-side {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: 0;
+    background: var(--mw-navy);
+}
+
+/* Brand */
+.admin-dashboard .mw-side-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 22px 22px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.admin-dashboard .mw-side-brand-title {
+    font-family: 'Inter', Georgia, serif;
+    font-weight: 600;
+    color: #fff;
+    font-size: 19.5px;
+    line-height: 1.05;
+    margin: 0;
+}
+.admin-dashboard .mw-side-brand-sub {
+    color: var(--mw-gold);
+    font-family: 'Inter', sans-serif;
+    font-size: 9.5px;
+    letter-spacing: 0.09em;
+    margin: 3px 0 0;
+}
+
+/* Role badge */
+.admin-dashboard .mw-side-role {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 14px 18px 6px;
+    padding: 7px 11px;
+    background: rgba(47, 128, 237, 0.12);
+    border: 1px solid rgba(47, 128, 237, 0.3);
+    border-radius: var(--radius-sm, 6px);
+}
+.admin-dashboard .mw-side-role .dot { width: 6px; height: 6px; border-radius: var(--radius-pill, 999px); background: var(--mw-gold); flex-shrink: 0; }
+.admin-dashboard .mw-side-role span:last-child {
+    color: var(--mw-gold-light);
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 11.5px;
+}
+
+/* Nav */
+.admin-dashboard .mw-side-nav { flex: 1; overflow-y: auto; padding: 8px 14px; }
+.admin-dashboard .mw-side-section { margin-bottom: 4px; }
+.admin-dashboard .mw-side-seclabel {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 10px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.34);
+    padding: 14px 12px 6px;
+    margin: 0;
+    list-style: none;
+}
+
+/* Links */
+.admin-dashboard .mw-side-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    margin-bottom: 2px;
+    border-radius: var(--radius-sm, 6px);
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.72);
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    transition: background-color 0.14s ease, color 0.14s ease;
+}
+.admin-dashboard .mw-side-link:hover { background: rgba(255, 255, 255, 0.06); color: #fff; }
+.admin-dashboard .mw-side-link.active {
+    background: var(--mw-navy-light);
+    color: #fff;
+    font-weight: 500;
+    box-shadow: inset 3px 0 0 var(--mw-gold);   /* gold active indicator */
+}
+.admin-dashboard .mw-side-ic { display: inline-flex; flex-shrink: 0; }
+.admin-dashboard .mw-side-ic svg { stroke: rgba(255, 255, 255, 0.6); }
+.admin-dashboard .mw-side-link:hover .mw-side-ic svg { stroke: #fff; }
+.admin-dashboard .mw-side-link.active .mw-side-ic svg { stroke: var(--mw-gold); }
+
+/* Footer */
+.admin-dashboard .mw-side-foot {
+    padding: 14px 22px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.34);
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+/* On the mobile drawer the rail need not force full viewport height */
+@media (max-width: 991.98px) {
+    .admin-dashboard .admin-sidebar-body.mw-side { min-height: 100%; }
+}

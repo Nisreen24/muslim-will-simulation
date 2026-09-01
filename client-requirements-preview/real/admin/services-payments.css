@@ -1,0 +1,626 @@
+/* Services & Payments Styles - Based on Design HTML */
+.client-profile-services-payments {
+  width: 100%;
+}
+
+.client-profile-services-payments * {
+  box-sizing: border-box;
+}
+
+.client-profile-services-payments__card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--radius-lg, 12px);
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.03);
+}
+
+.client-profile-services-payments__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 28px;
+  border-bottom: 1px solid #edf0f3;
+}
+
+.client-profile-services-payments__header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.client-profile-services-payments__title {
+  margin: 0;
+  color: #111827;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.client-profile-services-payments__count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 26px;
+  padding: 5px 10px;
+  border-radius: var(--radius-pill, 999px);
+  background: #f3f4f6;
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.client-profile-services-payments__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.client-profile-services-payments__action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: var(--radius-sm, 6px);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.client-profile-services-payments__action-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.client-profile-services-payments__action-btn--secondary {
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #6b7280;
+}
+
+.client-profile-services-payments__action-btn--secondary:hover {
+  background: #f9fafb;
+}
+
+.client-profile-services-payments__action-btn--primary {
+  border: 1px solid #16a34a;
+  background: #16a34a;
+  color: #ffffff;
+}
+
+.client-profile-services-payments__action-btn--primary:hover {
+  background: #15803d;
+  border-color: #15803d;
+}
+
+.client-profile-services-payments__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(280px, 0.7fr);
+  gap: 0;
+  padding: 24px 26px;
+}
+
+.client-profile-services-payments__left {
+  padding-right: 28px;
+}
+
+.client-profile-services-payments__right {
+  padding-left: 28px;
+  border-left: 1px solid #edf0f3;
+}
+
+.client-profile-services-payments__edit-alert {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  margin-bottom: 34px;
+  padding: 10px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--radius-sm, 6px);
+  background: #ffffff;
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.client-profile-services-payments__edit-alert strong {
+  color: #374151;
+  font-weight: 700;
+}
+
+.client-profile-services-payments__edit-alert-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-circle, 50%);
+  background: #f97316;
+  flex-shrink: 0;
+}
+
+.client-profile-services-payments__section-label {
+  margin-bottom: 22px;
+  color: #c0c7d4;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.12em;
+}
+
+.client-profile-services-payments__services-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.client-profile-services-payments__service-card {
+  position: relative;
+  display: block;
+  min-height: 146px;
+  padding: 16px 16px 18px;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--radius-md, 8px);
+  background: #ffffff;
+  transition: all 0.2s ease;
+}
+
+.client-profile-services-payments__service-card--editable {
+  cursor: default;
+}
+
+.client-profile-services-payments__service-card--selected {
+  border-color: #c7efcf;
+  background: #fdfefe;
+}
+
+.client-profile-services-payments__service-checkbox {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.client-profile-services-payments__service-check {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  width: 14px;
+  height: 14px;
+  border: 1px solid #d1d5db;
+  border-radius: var(--radius-xs, 3px);
+  background: #ffffff;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.client-profile-services-payments__service-check svg {
+  display: none;
+}
+
+.client-profile-services-payments__service-check::after {
+  content: "";
+  width: 4px;
+  height: 8px;
+  border-right: 1.5px solid #16a34a;
+  border-bottom: 1.5px solid #16a34a;
+  transform: rotate(45deg);
+  display: none;
+  margin-top: -1px;
+}
+
+.client-profile-services-payments__service-card--selected
+  .client-profile-services-payments__service-check {
+  border-color: #86efac;
+  background: #f0fdf4;
+}
+
+.client-profile-services-payments__service-card--selected
+  .client-profile-services-payments__service-check::after {
+  display: block;
+}
+
+.client-profile-services-payments__service-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.client-profile-services-payments__service-type {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 20px;
+  padding: 4px 9px;
+  border: 1px solid #eceef2;
+  border-radius: var(--radius-pill, 999px);
+  background: #f9fafb;
+  color: #c2c8d3;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.08em;
+}
+
+.client-profile-services-payments__service-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  padding: 5px 10px;
+  border-radius: var(--radius-pill, 999px);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.client-profile-services-payments__service-status--included {
+  border: 1px solid #b7e8c3;
+  background: #eaf9ee;
+  color: #16a34a;
+}
+
+.client-profile-services-payments__service-title {
+  margin: 0 0 10px;
+  color: #1f2937;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.client-profile-services-payments__service-text {
+  margin: 0 0 14px;
+  color: #b4bcc9;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.client-profile-services-payments__service-price {
+  color: #4b5563;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.client-profile-services-payments__service-price--included {
+  color: #c4c9d2;
+  font-weight: 500;
+}
+
+.client-profile-services-payments__summary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.client-profile-services-payments__summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.client-profile-services-payments__summary-row span {
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.client-profile-services-payments__summary-row strong {
+  color: #4b5563;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.client-profile-services-payments__divider {
+  width: 100%;
+  height: 1px;
+  background: #e5e7eb;
+  margin: 22px 0 18px;
+}
+
+.client-profile-services-payments__divider--large {
+  margin: 22px 0 24px;
+}
+
+.client-profile-services-payments__total-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.client-profile-services-payments__total-row span {
+  color: #374151;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.client-profile-services-payments__total-row strong {
+  color: #111827;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.client-profile-services-payments__totals-box {
+  padding: 14px 14px;
+  border: 1px solid #eceef2;
+  border-radius: var(--radius-md, 8px);
+  background: #f8fafc;
+}
+
+.client-profile-services-payments__totals-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.client-profile-services-payments__totals-item
+  + .client-profile-services-payments__totals-item {
+  margin-top: 10px;
+}
+
+.client-profile-services-payments__totals-item span {
+  color: #9ca3af;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.client-profile-services-payments__totals-item strong {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.client-profile-services-payments__paid {
+  color: #16a34a;
+}
+
+.client-profile-services-payments__outstanding {
+  color: #f97316;
+}
+
+.client-profile-services-payments__manual-entry-btn {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 38px;
+  margin-top: 18px;
+  padding: 0 14px;
+  border: 1px solid #d1d5db;
+  border-radius: var(--radius-sm, 6px);
+  background: #ffffff;
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.client-profile-services-payments__manual-entry-btn:hover {
+  background: #f9fafb;
+}
+
+.client-profile-services-payments__manual-entry-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.client-profile-services-payments__history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.client-profile-services-payments__history-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 0 0 18px;
+}
+
+.client-profile-services-payments__history-item
+  + .client-profile-services-payments__history-item {
+  padding-top: 18px;
+  border-top: 1px solid #f0f2f5;
+}
+
+.client-profile-services-payments__history-info h4 {
+  margin: 0 0 6px;
+  color: #374151;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.client-profile-services-payments__history-info p {
+  margin: 0;
+  color: #c0c7d4;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.client-profile-services-payments__history-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.client-profile-services-payments__history-meta strong {
+  color: #4b5563;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.client-profile-services-payments__history-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 26px;
+  padding: 5px 10px;
+  border-radius: var(--radius-pill, 999px);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.client-profile-services-payments__history-status--paid {
+  border: 1px solid #b7e8c3;
+  background: #eef7f0;
+  color: #16a34a;
+}
+
+.client-profile-services-payments__history-status--pending {
+  border: 1px solid #f8d2b8;
+  background: #fff7ed;
+  color: #c2784a;
+}
+
+.client-profile-services-payments__count-badge--edit,
+.client-profile-services-payments__header-actions--edit {
+  display: none;
+}
+
+.client-profile-services-payments--edit-mode
+  .client-profile-services-payments__count-badge--view,
+.client-profile-services-payments--edit-mode
+  .client-profile-services-payments__header-actions--view {
+  display: none;
+}
+
+.client-profile-services-payments--edit-mode
+  .client-profile-services-payments__count-badge--edit,
+.client-profile-services-payments--edit-mode
+  .client-profile-services-payments__header-actions--edit {
+  display: flex;
+}
+
+.client-profile-services-payments--edit-mode
+  .client-profile-services-payments__edit-alert {
+  display: flex;
+}
+
+.client-profile-services-payments--edit-mode
+  .client-profile-services-payments__manual-entry-btn {
+  display: inline-flex;
+}
+
+.client-profile-services-payments--edit-mode
+  .client-profile-services-payments__service-check {
+  display: inline-flex;
+}
+
+.client-profile-services-payments--edit-mode
+  .client-profile-services-payments__service-card {
+  cursor: pointer;
+}
+
+.client-profile-services-payments--edit-mode
+  .client-profile-services-payments__service-card:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.03);
+}
+
+.client-profile-services-payments--edit-mode
+  .client-profile-services-payments__service-head {
+  padding-left: 22px;
+}
+
+/* Responsive */
+@media (max-width: 1199px) {
+  .client-profile-services-payments__body {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .client-profile-services-payments__left {
+    padding-right: 0;
+  }
+
+  .client-profile-services-payments__right {
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid #edf0f3;
+    padding-top: 28px;
+  }
+}
+
+@media (max-width: 767px) {
+  .client-profile-services-payments__header {
+    padding: 16px 18px;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .client-profile-services-payments__header-actions {
+    width: 100%;
+  }
+
+  .client-profile-services-payments__body {
+    padding: 18px;
+  }
+
+  .client-profile-services-payments__services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .client-profile-services-payments__action-btn {
+    flex: 1 1 calc(50% - 5px);
+  }
+}
+
+@media (max-width: 575px) {
+  .client-profile-services-payments__header-left {
+    width: 100%;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .client-profile-services-payments__header-actions {
+    flex-direction: column;
+  }
+
+  .client-profile-services-payments__action-btn {
+    width: 100%;
+    flex: 1 1 100%;
+  }
+
+  .client-profile-services-payments__history-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .client-profile-services-payments__history-meta {
+    align-items: flex-start;
+  }
+}
